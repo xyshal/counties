@@ -40,3 +40,9 @@ foreach my $line(@contents) {
 }
 close $OUTPUT;
 
+my $inkscape = ($^O eq "MSWin32") ? "C:\\Program Files\\Inkscape\\inkscape.exe"
+                                  : "inkscape";
+
+system("$inkscape -z -e counties.png -w 2400 counties.svg") == 0
+  or warn("failed to save the png");
+
