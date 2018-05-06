@@ -9,7 +9,7 @@ foreach my $f( ($csv, $input) ) {
 }
 
 my $output = "counties.svg";
-die "Refuse to overwrite existing $output" if -e $output;
+unlink $output if -e $output;
 
 open(my $fh, '<', "$csv") or die("Failed to open $csv");
 chomp(my @contents = <$fh>);
