@@ -2,14 +2,22 @@
 
 use strict;
 
+my $color = shift;
+$color = "blue" if not defined $color;
+
 my $csv = "counties.csv";
 my $input = "Usa_counties_large.svg";
 foreach my $f( ($csv, $input) ) {
   die "Can't find $f" unless -e $f;
 }
 
-my $output = "counties.svg";
-unlink $output if -e $output;
+my $outputName = "counties";
+my $svg = "$outputName.svg";
+my $png = "$outputName.png";
+
+foreach my $file( ($svg, $png) ) {
+  unlink $file if -e $file;
+}
 
 open(my $fh, '<', "$csv") or die("Failed to open $csv");
 chomp(my @contents = <$fh>);
@@ -30,19 +38,20 @@ chomp(my @contents = <$INPUT>);
 close $INPUT;
 
 # Add a fill, if our county was defined in the csv
-open(my $OUTPUT, '>', "$output") or die("Failed to open $output");
+open(my $OUTPUT, '>', "$svg") or die("Failed to open $svg");
 foreach my $line(@contents) {
   if ( $line =~ m/id="([^"]*,[^"]*)"/ ) {
     my $county = $1;
-    $line =~ s/\/>/ fill="blue" \/>/ if defined $counties{$county};
+    $line =~ s/\/>/ fill="$color" \/>/ if defined $counties{$county};
   }
   print $OUTPUT "$line\n";
 }
 close $OUTPUT;
 
-my $inkscape = ($^O eq "MSWin32") ? "C:\\Program Files\\Inkscape\\inkscape.exe"
+my $inkscape = ($^O eq "MSWin32") ? "\"C:\\Program Files\\Inkscape\\inkscape.exe\""
                                   : "inkscape";
 
-system("$inkscape -z -e counties.png -w 2400 counties.svg") == 0
-  or warn("failed to save the png");
+unlink $png if -e $png;
+system("$inkscape -z -e $png -w 2400 $svg") == 0
+  or warn("failed to save the png: $!");
 
