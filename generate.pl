@@ -26,9 +26,13 @@ close $fh;
 # Throw the results in a hash.  This is not especially performant, but
 # whatever; it's fast enough.
 my %counties;
+my $totalCounties = 0;
+my $visitedCounties = 0;
 foreach my $line(@contents) {
   if ( $line =~ m/"([^"]*)",([0-9]*)/ ) {
     $counties{$1} = $2 if $2 != 0;
+    $visitedCounties++ if $2 != 0;
+    $totalCounties++;
   }
 }
 
@@ -54,4 +58,8 @@ my $inkscape = ($^O eq "MSWin32") ? "\"C:\\Program Files\\Inkscape\\inkscape.exe
 unlink $png if -e $png;
 system("$inkscape -z -e $png -w 2400 $svg") == 0
   or warn("failed to save the png: $!");
+
+print "You have visited $visitedCounties out of $totalCounties counties (";
+printf("%.2f", $visitedCounties / $totalCounties * 100);
+print "%)\n";
 
