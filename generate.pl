@@ -6,7 +6,7 @@ my $color = shift;
 $color = "blue" if not defined $color;
 
 my $csv = "counties.csv";
-my $input = "Usa_counties_large.svg";
+my $input = "resources/Usa_counties_large.svg";
 foreach my $f( ($csv, $input) ) {
   die "Can't find $f" unless -e $f;
 }
