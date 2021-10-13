@@ -4,7 +4,10 @@ project(qcounties VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+
+if (UNIX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+endif (UNIX)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
@@ -44,7 +47,9 @@ target_link_libraries(${PROJECT_NAME}
 qt_finalize_executable(${PROJECT_NAME})
 
 # Avoid the need for QT_QPA_PLATFORM_PLUGIN_PATH being set in dev builds
-write_file(${CMAKE_BINARY_DIR}/bin/qt.conf "[Paths]\nPrefix = ${CONAN_QT_ROOT}/res/archdatadir")
+if (UNIX)
+  write_file(${CMAKE_BINARY_DIR}/bin/qt.conf "[Paths]\nPrefix = ${CONAN_QT_ROOT}/res/archdatadir")
+endif (UNIX)
 
 # TODO: How to avoid needing to set FONTCONFIG_PATH=/etc/fonts?  Is that a
 # thing the project should even be doing, or is that a system-level issue?
