@@ -5,7 +5,7 @@ use strict;
 my $csv = "counties.csv";
 die "Refuse to overwrite existing $csv" if -e $csv;
 
-my $svg = "resources/Usa_counties_large.svg";
+my $svg = "../resources/Usa_counties_large.svg";
 die "$svg does not exist" unless -f $svg;
 
 open(my $SVG, '<', "$svg") or die("Failed to open $svg");
