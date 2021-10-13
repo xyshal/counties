@@ -23,3 +23,5 @@ class QCounties(ConanFile):
         if platform.system() == "Darwin":
             self.requires("openssl/1.1.1l")
             self.requires("qt/6.1.3")
+        else:
+            self.requires("cmake/[>=3.5]")
