@@ -66,5 +66,3 @@ if (WIN32)
     $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 endif (WIN32)
 
-# TODO: How to avoid needing to set FONTCONFIG_PATH=/etc/fonts?  Is that a
-# thing the project should even be doing, or is that a system-level issue?

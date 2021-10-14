@@ -41,6 +41,3 @@ if ($^O eq "linux") {
 
 RunCommandInConanEnv($makeCmd);
 
-# QT_QPA_PLATFORM_PLUGIN_PATH = $CONAN_QT_ROOT/res/archdatadir/plugins
-# FONTCONFIG_PATH=/etc/fonts
-# DYLD_LIBRARY_PATH on Mac OS
