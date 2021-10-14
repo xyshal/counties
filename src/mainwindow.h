@@ -1,6 +1,9 @@
 #pragma once
 
 #include <QMainWindow>
+#include <vector>
+
+#include "county.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -26,5 +29,10 @@ private slots:
   void mapClicked(QMouseEvent*);
 
 private:
+  void createDefaultCounties();
+
+private:
   Ui::MainWindow* ui;
+
+  std::vector<County> vCounties;
 };
