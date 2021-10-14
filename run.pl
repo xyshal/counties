@@ -7,7 +7,7 @@ if ($^O eq "MSWin32") {
   system("build/bin/qcounties.exe");
 } elsif ($^O eq "linux") {
   $ENV{'FONTCONFIG_PATH'} = "/etc/fonts";
-  system("build/bin/qcounties.exe");
+  system("build/bin/qcounties");
 } elsif ($^O eq "darwin") {
   # TODO: Just copy the libs like on Windows or figure out rpath on Mac
   my $conanInfo = read_file("build/conanbuildinfo.cmake");
