@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 if (UNIX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+  add_compile_options(-Wall -Wextra -Werror)
 endif (UNIX)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
