@@ -2,4 +2,5 @@ BasedOnStyle: Google
 AccessModifierOffset: -2
 BreakBeforeBraces: Linux
 DerivePointerAlignment: false
+MaxEmptyLinesToKeep: 2
 PointerAlignment: Left
