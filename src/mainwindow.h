@@ -1,9 +1,12 @@
 #pragma once
 
 #include <QMainWindow>
-#include <vector>
+#include <memory>
 
-#include "county.h"
+#include "countydata.h"
+
+class QStandardItem;
+class QStandardItemModel;
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -26,13 +29,11 @@ private slots:
   void zoomFit();
   void zoomMax();
 
-  void mapClicked(QMouseEvent*);
-
-private:
-  void createDefaultCounties();
+  void mapClicked(const QMouseEvent*);
+  void countyChanged(const QStandardItem*);
 
 private:
   Ui::MainWindow* ui;
-
-  std::vector<County> vCounties;
+  QStandardItemModel* vModel;
+  std::shared_ptr<CountyData> vData = std::make_shared<CountyData>();
 };

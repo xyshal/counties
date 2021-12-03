@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <compare>
 #include <string>
 #include <vector>
 
@@ -63,6 +64,9 @@ enum struct State {
 struct County {
   std::string name;
   State state = State::NStates;
+
+  friend auto operator<=>(const County&, const County&) = default;
+  friend std::ostream& operator<<(std::ostream&, const County&);
 };
 
 
@@ -200,5 +204,13 @@ constexpr const char* AbbreviationForState(const State state)
       return "null";
   }
   return "can't happen";
+}
+
+
+inline std::ostream& operator<<(std::ostream& s, const County& c)
+{
+  s << std::string("{ ") << c.name << std::string(", ")
+    << std::string(AbbreviationForState(c.state)) << std::string(" }");
+  return s;
 }
 
