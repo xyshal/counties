@@ -1,7 +1,12 @@
 #pragma once
 
 #include <array>
+
+// TODO: My MacBook is really old :/
+#ifndef __APPLE__
 #include <compare>
+#endif
+
 #include <string>
 #include <vector>
 
@@ -65,7 +70,18 @@ struct County {
   std::string name;
   State state = State::NStates;
 
+#ifdef __APPLE__
+  friend bool operator<(const County& lhs, const County& rhs) {
+    if (lhs.state != rhs.state) return lhs.state < rhs.state;
+    return lhs.name.compare(rhs.name) < 0;
+  }
+  friend bool operator==(const County& lhs, const County&rhs) {
+    return lhs.name == rhs.name && lhs.state == rhs.state;
+  }
+#else
   friend auto operator<=>(const County&, const County&) = default;
+#endif
+
   friend std::ostream& operator<<(std::ostream&, const County&);
 };
 
