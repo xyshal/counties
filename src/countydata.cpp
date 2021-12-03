@@ -86,17 +86,11 @@ bool CountyData::readFromFile(const std::string& fileName)
     }
 
     std::string id = line.substr(0, delimiter);
-    std::cout << id << "\n";
-    id.erase(std::remove(id.begin(), id.end(), '\"'), id.end());
 
-    const std::string countyName = id.substr(0, firstComma - 1);
-    const std::string state_ = id.substr(firstComma + 1);
-
-    const State state = AbbreviationToState(state_);
-    if (state == State::NStates) {
+    const County county = County::fromString(id);
+    if (county.state == State::NStates) {
       std::cerr << "Warning: Skipping line " << i
-                << ", whose county had the unrecognized state " << state_
-                << "\n";
+                << ", which had unrecognized data " << line << "\n";
       ok = false;
       continue;
     }
@@ -110,7 +104,6 @@ bool CountyData::readFromFile(const std::string& fileName)
       return false;
     }();
 
-    const County county = {countyName, state};
     const bool setOk = setCountyVisited(county, visited);
     if (!setOk) {
       std::cout << "Warning: Ignoring unrecognized county " << county << "\n";
@@ -153,13 +146,3 @@ std::vector<std::pair<County, bool>>::const_iterator CountyData::findCounty(
   return it;
 }
 
-
-// TODO: This will be needed for the CSV file write and was saved from the
-// deleted csvfile.cpp
-/*
-std::string CountyToID(const County& county)
-{
-  return std::string() + "\"" + county.name + "\", " +
-         AbbreviationForState(county.state);
-}
-*/

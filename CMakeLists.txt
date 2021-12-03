@@ -28,6 +28,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 set(PROJECT_SOURCES
+  src/county.cpp
   src/county.h
   src/countydata.cpp
   src/countydata.h

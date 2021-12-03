@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 
+#include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QRegularExpression>
 #include <QStandardItemModel>
 #include <QString>
 #include <QSvgRenderer>
@@ -12,6 +14,8 @@
 
 #include "./ui_mainwindow.h"
 #include "countydata.h"
+
+constexpr auto countyMapResource = ":/Usa_counties_large.svg";
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -35,8 +39,7 @@ MainWindow::MainWindow(QWidget* parent)
   ui->dataSplitter->setSizes({1, 500});
 
   // SVG Widget
-  const QString mapPath = ":/Usa_counties_large.svg";
-  ui->countyMap->load(mapPath);
+  ui->countyMap->load(QString(countyMapResource));
   ui->countyMap->renderer()->setAspectRatioMode(Qt::KeepAspectRatio);
   connect(ui->countyMap, &SvgWidget::clicked, this, &MainWindow::mapClicked);
 
@@ -94,8 +97,8 @@ void MainWindow::onOpen()
     QMessageBox::critical(
         this, "Failed to parse file",
         QString("Failed to parse the specified file %1").arg(fileName));
-    return;
   }
+  rebuildSvgFromData();
 }
 
 void MainWindow::onSave() {}
@@ -122,9 +125,49 @@ void MainWindow::countyChanged(const QStandardItem* item)
 
   visited = (item->checkState() == Qt::Checked);
 
-  // TODO: Qt doesn't have an Svg modifying class, so I think we're gonna have
-  // to write out our own svg with the modifications we need...
-  std::cout << "Changed " << county.name << ", "
-            << AbbreviationForState(county.state) << " to "
-            << (visited ? "visited" : "not visited") << "\n";
+  vData->setCountyVisited(county, visited);
+
+  rebuildSvgFromData();
+}
+
+// TODO: There's gotta be a better way to do this.  Is there anything in new Qt
+// about Svg manipulation?
+void MainWindow::rebuildSvgFromData()
+{
+  QFile f(countyMapResource);
+  assert(f.open(QFile::ReadOnly));
+
+  // TODO: The compiler hangs when I use QTemporaryFile, what's going on
+  // here...?
+  QFile::remove("/tmp/fix-this");
+  QFile newMap("/tmp/fix-this");
+
+  assert(newMap.open(QFile::ReadWrite));
+  QTextStream newMapStream(&newMap);
+
+  while (!f.atEnd()) {
+    const QString line = f.readLine().data();
+    QString replacementLine = line;
+    if (line.contains("path")) {
+      QRegularExpression rx;
+      rx.setPattern("id=\"([^\"]*,[^\"]*)\"");
+      const QRegularExpressionMatch match = rx.match(line);
+      if (match.hasMatch()) {
+        const QString countyStr = match.captured(1);
+        const County county = County::fromString(countyStr.toStdString());
+        assert(county.state != State::NStates);
+        if (vData->countyVisited(county)) {
+          QRegularExpression addColor;
+          addColor.setPattern("/>");
+          QString withColor = " fill=\"blue\" />";
+          replacementLine.replace(addColor, withColor);
+        }
+      }
+    }
+    newMapStream << replacementLine;
+  }
+
+  newMap.close();
+  ui->countyMap->load(newMap.fileName());
+  ui->countyMap->renderer()->setAspectRatioMode(Qt::KeepAspectRatio);
 }

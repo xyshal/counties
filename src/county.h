@@ -84,6 +84,9 @@ struct County {
   friend auto operator<=>(const County&, const County&) = default;
 #endif
 
+  std::string toString() const;
+  static County fromString(const std::string&);
+
   friend std::ostream& operator<<(std::ostream&, const County&);
 };
 
@@ -225,23 +228,4 @@ constexpr const char* AbbreviationForState(const State state)
 }
 
 
-inline State AbbreviationToState(const std::string& abbr)
-{
-  State state = State::NStates;
-  for (State candidateState : AllStates()) {
-    if (abbr == AbbreviationForState(candidateState)) {
-      state = candidateState;
-      break;
-    }
-  }
-  return state;
-}
-
-
-inline std::ostream& operator<<(std::ostream& s, const County& c)
-{
-  s << std::string("{ ") << c.name << std::string(", ")
-    << std::string(AbbreviationForState(c.state)) << std::string(" }");
-  return s;
-}
-
+State AbbreviationToState(const std::string& abbr);
