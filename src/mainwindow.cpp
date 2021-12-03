@@ -12,7 +12,6 @@
 
 #include "./ui_mainwindow.h"
 #include "countydata.h"
-#include "countymodel.h"
 #include "csvfile.h"
 
 MainWindow::MainWindow(QWidget* parent)
