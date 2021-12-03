@@ -71,11 +71,13 @@ struct County {
   State state = State::NStates;
 
 #ifdef __APPLE__
-  friend bool operator<(const County& lhs, const County& rhs) {
+  friend bool operator<(const County& lhs, const County& rhs)
+  {
     if (lhs.state != rhs.state) return lhs.state < rhs.state;
     return lhs.name.compare(rhs.name) < 0;
   }
-  friend bool operator==(const County& lhs, const County&rhs) {
+  friend bool operator==(const County& lhs, const County& rhs)
+  {
     return lhs.name == rhs.name && lhs.state == rhs.state;
   }
 #else
@@ -220,6 +222,19 @@ constexpr const char* AbbreviationForState(const State state)
       return "null";
   }
   return "can't happen";
+}
+
+
+inline State AbbreviationToState(const std::string& abbr)
+{
+  State state = State::NStates;
+  for (State candidateState : AllStates()) {
+    if (abbr == AbbreviationForState(candidateState)) {
+      state = candidateState;
+      break;
+    }
+  }
+  return state;
 }
 
 

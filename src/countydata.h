@@ -5,18 +5,21 @@
 
 #include "county.h"
 
-// This class only exists so that the model and the main window both have
-// access to the same data and can operate on it with an easier interface
-// TODO: As we're using a QStandardItemModel, that's no longer true -- should
-// this class just go away?
-
 class CountyData
 {
 public:
-  bool countyVisited(const County& c) const;
-  void setCountyVisited(const County& c, const bool visited);
+  CountyData();
+  ~CountyData() = default;
+  CountyData(const CountyData&) = default;
+  CountyData(CountyData&&) = default;
+  CountyData& operator=(const CountyData&) = default;
+  CountyData& operator=(CountyData&&) = default;
 
-  void createDefaultCounties();
+  bool countyVisited(const County& c) const;
+  bool setCountyVisited(const County& c, const bool visited);
+
+  bool readFromFile(const std::string& fileName);
+
   size_t size() const { return mCounties.size(); }
 
 private:

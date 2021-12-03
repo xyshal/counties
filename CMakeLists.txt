@@ -31,8 +31,6 @@ set(PROJECT_SOURCES
   src/county.h
   src/countydata.cpp
   src/countydata.h
-  src/csvfile.cpp
-  src/csvfile.h
   src/main.cpp
   src/mainwindow.cpp
   src/mainwindow.h

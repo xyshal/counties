@@ -12,7 +12,6 @@
 
 #include "./ui_mainwindow.h"
 #include "countydata.h"
-#include "csvfile.h"
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -40,10 +39,6 @@ MainWindow::MainWindow(QWidget* parent)
   ui->countyMap->load(mapPath);
   ui->countyMap->renderer()->setAspectRatioMode(Qt::KeepAspectRatio);
   connect(ui->countyMap, &SvgWidget::clicked, this, &MainWindow::mapClicked);
-
-  // TODO: Either push this into the constructor or provide a mechanism for
-  // opening from a file on the command line so this isn't always desirable.
-  vData->createDefaultCounties();
 
   // Model setup
   vModel = new QStandardItemModel(this);
@@ -93,15 +88,14 @@ void MainWindow::onOpen()
   const QString fileName = QFileDialog::getOpenFileName(this, "Open File");
   if (fileName.isEmpty()) return;
 
-  /*
-  vCounties = ReadCsvFile(fileName.toStdString());
-  if (vCounties.empty()) {
+  const bool ok = vData->readFromFile(fileName.toStdString());
+  if (!ok) {
+    // TODO: Report here instead of the command line
     QMessageBox::critical(
         this, "Failed to parse file",
         QString("Failed to parse the specified file %1").arg(fileName));
     return;
   }
-  */
 }
 
 void MainWindow::onSave() {}
