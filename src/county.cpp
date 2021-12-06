@@ -21,7 +21,7 @@ County County::fromString(const std::string& id_)
     std::cerr << "Warning: unrecognized state [" << state_ << "]\n";
   }
 
-  return County(countyName, state);
+  return {countyName, state};
 }
 
 
