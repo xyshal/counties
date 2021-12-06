@@ -1,0 +1,13 @@
+Near term
+=========
+* Write a test for ensuring that all the counties in the resource fill all the
+  elements with IDs in the svg
+* State percentage counts in the parent tree item (stats generally)
+* CSV write (or just work on the "open" CSV file?) -- export otherwise
+* Some kind of image export.  PNG (or just svg?)
+* Packaging on all platforms?  AppImage, NSIS, DMG?
+
+Long term
+=========
+* Get click mapping working
+* 
