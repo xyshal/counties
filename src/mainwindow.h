@@ -33,10 +33,15 @@ private slots:
   void countyChanged(const QStandardItem*);
 
 private:
+  void rebuildFromData();
+  void rebuildModelFromData();
   void rebuildSvgFromData();
 
 private:
   Ui::MainWindow* ui;
   QStandardItemModel* vModel;
   std::shared_ptr<CountyData> vData = std::make_shared<CountyData>();
+
+  // TODO: Isn't there a better way to do this these days?
+  bool vLoadingFromData = false;
 };

@@ -15,7 +15,10 @@
 #include "./ui_mainwindow.h"
 #include "countydata.h"
 
-constexpr auto countyMapResource = ":/Usa_counties_large.svg";
+static constexpr auto countyMapResource = ":/Usa_counties_large.svg";
+
+static constexpr int NameColumn = 0;
+static constexpr int VisitedColumn = 1;
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -64,7 +67,7 @@ MainWindow::MainWindow(QWidget* parent)
     QStandardItem* countyItem = new QStandardItem(QString(county.name.c_str()));
     countyItem->setEditable(false);
 
-    QStandardItem* visitedItem = new QStandardItem(1);
+    QStandardItem* visitedItem = new QStandardItem(VisitedColumn);
     visitedItem->setCheckable(true);
     visitedItem->setCheckState(visited ? Qt::Checked : Qt::Unchecked);
     visitedItem->setData(QVariant::fromValue(i), Qt::UserRole);
@@ -74,8 +77,10 @@ MainWindow::MainWindow(QWidget* parent)
   }
 
 
-  vModel->setHorizontalHeaderItem(0, new QStandardItem(QString("County")));
-  vModel->setHorizontalHeaderItem(1, new QStandardItem(QString("Visited")));
+  vModel->setHorizontalHeaderItem(NameColumn,
+                                  new QStandardItem(QString("County")));
+  vModel->setHorizontalHeaderItem(VisitedColumn,
+                                  new QStandardItem(QString("Visited")));
   ui->countyList->setModel(vModel);
 
   connect(vModel, &QStandardItemModel::itemChanged, this,
@@ -98,7 +103,7 @@ void MainWindow::onOpen()
         this, "Failed to parse file",
         QString("Failed to parse the specified file %1").arg(fileName));
   }
-  rebuildSvgFromData();
+  rebuildFromData();
 }
 
 void MainWindow::onSave() {}
@@ -115,6 +120,8 @@ void MainWindow::mapClicked(const QMouseEvent* e)
 
 void MainWindow::countyChanged(const QStandardItem* item)
 {
+  if (vLoadingFromData) return;
+
   assert(item->column() == 1);
   assert(item->parent() != vModel->invisibleRootItem());
 
@@ -130,8 +137,49 @@ void MainWindow::countyChanged(const QStandardItem* item)
   rebuildSvgFromData();
 }
 
-// TODO: There's gotta be a better way to do this.  Is there anything in new Qt
-// about Svg manipulation?
+
+void MainWindow::rebuildFromData()
+{
+  rebuildModelFromData();
+  rebuildSvgFromData();
+}
+
+
+void MainWindow::rebuildModelFromData()
+{
+  const bool loading = vLoadingFromData;
+  vLoadingFromData = true;
+
+  // This could be more surgical.
+  std::function<void(const QModelIndex&)> updateEachChild =
+      [this, &updateEachChild](const QModelIndex& parent) {
+        for (int i = 0; i < vModel->rowCount(parent); i++) {
+          // Need the name column because only the 0th column has children
+          const QModelIndex idx = vModel->index(i, NameColumn, parent);
+          const QModelIndex visitedIdx = idx.sibling(idx.row(), VisitedColumn);
+
+          bool ok = false;
+          const size_t dataIdx = visitedIdx.data(Qt::UserRole).toUInt(&ok);
+          if (ok) {
+            const bool visited = vData->mCounties[dataIdx].second;
+            vModel->itemFromIndex(visitedIdx)
+                ->setCheckState(visited ? Qt::Checked : Qt::Unchecked);
+          }
+
+          if (vModel->hasChildren(idx)) {
+            updateEachChild(idx);
+          }
+        }
+      };
+
+  // start with the invisible root item
+  updateEachChild({});
+
+  vLoadingFromData = loading;
+}
+
+// TODO: There's gotta be a better way to do this.  Is there anything in new
+// Qt about Svg manipulation?
 void MainWindow::rebuildSvgFromData()
 {
   QFile f(countyMapResource);
