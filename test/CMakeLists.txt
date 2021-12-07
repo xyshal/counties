@@ -13,11 +13,14 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 conan_basic_setup(TARGETS)
 
+find_package(GTest REQUIRED)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(PROJECT_SOURCES
   main.cpp
+  resource-test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
-target_link_libraries(${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME} GTest::gtest GTest::gtest_main)

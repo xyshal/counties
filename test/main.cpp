@@ -1,8 +1,8 @@
-#include <iostream>
+#include <gtest/gtest.h>
 
-int main(int, char**)
+int main(int argc, char** argv)
 {
-  std::cout << "hi\n";
-  return 0;
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
 

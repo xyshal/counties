@@ -41,3 +41,4 @@ if ($^O eq "linux") {
 
 RunCommandInConanEnv($makeCmd);
 
+system("test/bin/test") == 0 or die "Test failures";
