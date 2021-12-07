@@ -28,18 +28,18 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 set(PROJECT_SOURCES
-  src/county.cpp
-  src/county.h
-  src/countydata.cpp
-  src/countydata.h
-  src/main.cpp
-  src/mainwindow.cpp
-  src/mainwindow.h
-  src/mainwindow.ui
-  src/svgwidget.h
+  county.cpp
+  county.h
+  countydata.cpp
+  countydata.h
+  main.cpp
+  mainwindow.cpp
+  mainwindow.h
+  mainwindow.ui
+  svgwidget.h
 )
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} resources/resources.qrc)
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ../resources/resources.qrc)
 
 target_link_libraries(${PROJECT_NAME}
                       Qt6::Core

@@ -175,7 +175,7 @@
   <customwidget>
    <class>SvgWidget</class>
    <extends>QWidget</extends>
-   <header>src/svgwidget.h</header>
+   <header>svgwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
