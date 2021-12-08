@@ -193,6 +193,8 @@ void MainWindow::rebuildSvgFromData()
   assert(newMap.open(QFile::ReadWrite));
   QTextStream newMapStream(&newMap);
 
+  // TODO: Now that we've got pugixml available, should we use that for this
+  // instead?
   while (!f.atEnd()) {
     const QString line = f.readLine().data();
     QString replacementLine = line;

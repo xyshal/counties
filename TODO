@@ -1,7 +1,6 @@
 Near term
 =========
-* Write a test for ensuring that all the counties in the resource fill all the
-  elements with IDs in the svg
+* Take more advantage of the xml document being stored
 * State percentage counts in the parent tree item (stats generally)
 * CSV write (or just work on the "open" CSV file?) -- export otherwise
 * Some kind of image export.  PNG (or just svg?)

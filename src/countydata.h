@@ -1,5 +1,6 @@
 #pragma once
 
+#include <pugixml.hpp>
 #include <utility>
 #include <vector>
 
@@ -29,5 +30,8 @@ private:
 
 public:
   std::vector<std::pair<County, bool>> mCounties;
+
+private:
+  pugi::xml_document vSvg;
 };
 

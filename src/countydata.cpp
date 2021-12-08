@@ -1,7 +1,7 @@
 #include "countydata.h"
 
 #include <QFile>
-#include <QStringList>
+#include <QString>
 #include <QTextStream>
 #include <algorithm>
 #include <fstream>
@@ -12,20 +12,51 @@ CountyData::CountyData()
 {
   mCounties.clear();
 
-  QFile f(":/counties.csv");
+  QFile f(":/Usa_counties_large.svg");
 
-  if (f.open(QIODevice::ReadOnly)) {
+  // TODO: There's probably a better way to do this.
+  QString fileContents;
+
+  if (!f.open(QIODevice::ReadOnly)) {
+    assert(false);
+  } else {
     QTextStream s(&f);
     while (!s.atEnd()) {
-      const QStringList line = s.readLine().split(",");
-      assert(line.size() == 2);
-      const std::string name = line[0].toStdString();
-      const std::string stateAbbr = line[1].trimmed().toStdString();
-      const State state = AbbreviationToState(stateAbbr);
-      assert(state != State::NStates);
+      const QString line = s.readLine();
 
-      mCounties.push_back({{name, state}, false});
+      // KLUDGE: Boy, what a hack.  pugixml can't deal with the lack of </g> and
+      // refuses to parse the svg, but the svg standard requires it to not
+      // exist so the resource can't be modified.
+      if (line.contains("</svg>")) fileContents += QString(" </g>");
+
+      fileContents += line;
     }
+    assert(!fileContents.isEmpty());
+
+    // Pull all the <path>s into the data
+    const pugi::xml_parse_result result =
+        vSvg.load_string(fileContents.toStdString().c_str());
+    assert(result == pugi::status_ok);
+    const pugi::xml_node countyGroup = vSvg.child("svg").child("g");
+
+    size_t nPaths = 0;
+    for (const pugi::xml_node child : countyGroup.children()) {
+      const County county = County::fromString(child.attribute("id").value());
+      constexpr bool visited = false;
+      mCounties.push_back({county, visited});
+      nPaths++;
+    }
+    assert(mCounties.size() == 3143U);
+
+    // Because the SVG doesn't sort the counties, we have to.
+    // TODO: Just sort the SVG's path elements and resave it; it shouldn't
+    // matter, right?
+    std::sort(mCounties.begin(), mCounties.end(), [](auto& lhs_, auto& rhs_) {
+      const County& lhs = lhs_.first;
+      const County& rhs = rhs_.first;
+      if (lhs.state != rhs.state) return lhs.state < rhs.state;
+      return lhs.name < rhs.name;
+    });
   }
 }
 

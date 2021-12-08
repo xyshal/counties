@@ -21,6 +21,8 @@ find_package(Qt6
                Xml
              REQUIRED)
 
+find_package(pugixml REQUIRED)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -39,13 +41,14 @@ set(PROJECT_SOURCES
   svgwidget.h
 )
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ../resources/resources.qrc)
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_SOURCE_DIR}/../resources/resources.qrc)
 
 target_link_libraries(${PROJECT_NAME}
                       Qt6::Core
                       Qt6::Xml
                       Qt6::SvgWidgets
                       Qt6::Widgets
+                      pugixml::pugixml
                       )
 
 qt_finalize_executable(${PROJECT_NAME})
