@@ -3,10 +3,6 @@
 #include "county.h"
 #include "countydata.h"
 
-// TODO: Define this path in the project because relative paths to test
-// resources is always a bad idea.
-static constexpr auto svgPath = "../resources/Usa_counties_large.svg";
-
 struct CountyDataTest : public ::testing::Test {
   CountyData data;
 };

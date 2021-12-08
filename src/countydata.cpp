@@ -40,7 +40,7 @@ CountyData::CountyData()
     const pugi::xml_node countyGroup = vSvg.child("svg").child("g");
 
     size_t nPaths = 0;
-    for (const pugi::xml_node child : countyGroup.children()) {
+    for (const pugi::xml_node& child : countyGroup.children()) {
       const County county = County::fromString(child.attribute("id").value());
       constexpr bool visited = false;
       mCounties.push_back({county, visited});

@@ -11,10 +11,10 @@ class CountyData
 public:
   CountyData();
   ~CountyData() = default;
-  CountyData(const CountyData&) = default;
-  CountyData(CountyData&&) = default;
-  CountyData& operator=(const CountyData&) = default;
-  CountyData& operator=(CountyData&&) = default;
+  CountyData(const CountyData&) = delete;
+  CountyData(CountyData&&) = delete;
+  CountyData& operator=(const CountyData&) = delete;
+  CountyData& operator=(CountyData&&) = delete;
 
   bool countyVisited(const County& c) const;
   bool setCountyVisited(const County& c, const bool visited);
