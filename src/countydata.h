@@ -21,6 +21,8 @@ public:
 
   bool readFromFile(const std::string& fileName);
 
+  bool toSvg(const std::string& fileName);
+
   size_t size() const { return mCounties.size(); }
 
 private:

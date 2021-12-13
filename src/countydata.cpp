@@ -27,6 +27,8 @@ CountyData::CountyData()
       // KLUDGE: Boy, what a hack.  pugixml can't deal with the lack of </g> and
       // refuses to parse the svg, but the svg standard requires it to not
       // exist so the resource can't be modified.
+      // TODO: Brief internet searching suggests that ending <g> is totally
+      // valid SVG, so is something wrong with the QSvgWidget?
       if (line.contains("</svg>")) fileContents += QString(" </g>");
 
       fileContents += line;
@@ -75,6 +77,25 @@ bool CountyData::setCountyVisited(const County& county, const bool visited)
   auto it = findCounty(county);
   if (it == mCounties.end()) return false;
   (*it).second = visited;
+
+  // Update the color in the SVG.  TODO: Avoid this duplication?
+  const pugi::xml_node countyGroup = vSvg.child("svg").child("g");
+  for (pugi::xml_node& child : countyGroup.children()) {
+    const County candidateCounty = County::fromString(child.attribute("id").value());
+    if (candidateCounty == county) {
+      const pugi::xml_attribute color = child.attribute("fill");
+      if (color.empty()) {
+        if (visited) child.append_attribute("fill") = "blue";
+      } else {
+        if (visited) {
+          child.attribute("fill") = "blue";
+        } else {
+          child.remove_attribute(color);
+        }
+      }
+    }
+  }
+
   return true;
 }
 
@@ -142,6 +163,15 @@ bool CountyData::readFromFile(const std::string& fileName)
     }
   }
   return ok;
+}
+
+
+bool CountyData::toSvg(const std::string& fileName)
+{
+  // HACK: The reverse of the constructor's situation, but pugixml doesn't mind
+  // writing out the DOM without the closing </g> so no changes required
+  // here...
+  return vSvg.save_file(fileName.c_str());
 }
 
 

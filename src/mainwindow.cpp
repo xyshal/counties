@@ -178,8 +178,7 @@ void MainWindow::rebuildModelFromData()
   vLoadingFromData = loading;
 }
 
-// TODO: There's gotta be a better way to do this.  Is there anything in new
-// Qt about Svg manipulation?
+
 void MainWindow::rebuildSvgFromData()
 {
   QFile f(countyMapResource);
@@ -188,36 +187,9 @@ void MainWindow::rebuildSvgFromData()
   // TODO: The compiler hangs when I use QTemporaryFile, what's going on
   // here...?
   QFile::remove("/tmp/fix-this");
-  QFile newMap("/tmp/fix-this");
+  const bool ok = vData->toSvg("/tmp/fix-this");
+  assert(ok);
 
-  assert(newMap.open(QFile::ReadWrite));
-  QTextStream newMapStream(&newMap);
-
-  // TODO: Now that we've got pugixml available, should we use that for this
-  // instead?
-  while (!f.atEnd()) {
-    const QString line = f.readLine().data();
-    QString replacementLine = line;
-    if (line.contains("path")) {
-      QRegularExpression rx;
-      rx.setPattern("id=\"([^\"]*,[^\"]*)\"");
-      const QRegularExpressionMatch match = rx.match(line);
-      if (match.hasMatch()) {
-        const QString countyStr = match.captured(1);
-        const County county = County::fromString(countyStr.toStdString());
-        assert(county.state != State::NStates);
-        if (vData->countyVisited(county)) {
-          QRegularExpression addColor;
-          addColor.setPattern("/>");
-          QString withColor = " fill=\"blue\" />";
-          replacementLine.replace(addColor, withColor);
-        }
-      }
-    }
-    newMapStream << replacementLine;
-  }
-
-  newMap.close();
-  ui->countyMap->load(newMap.fileName());
+  ui->countyMap->load(QString("/tmp/fix-this"));
   ui->countyMap->renderer()->setAspectRatioMode(Qt::KeepAspectRatio);
 }
