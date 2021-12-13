@@ -107,6 +107,7 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
+    <addaction name="actionExportSvg"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -168,6 +169,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionExportSvg">
+   <property name="text">
+    <string>&amp;Export SVG</string>
    </property>
   </action>
  </widget>

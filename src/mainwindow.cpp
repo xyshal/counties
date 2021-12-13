@@ -30,6 +30,8 @@ MainWindow::MainWindow(QWidget* parent)
   // File Menu
   connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::onOpen);
   connect(ui->actionSave, &QAction::triggered, this, &MainWindow::onSave);
+  connect(ui->actionExportSvg, &QAction::triggered, this,
+          &MainWindow::onExportSvg);
 
   connect(ui->actionQuit, &QAction::triggered, qApp, &QGuiApplication::quit,
           Qt::QueuedConnection);
@@ -107,6 +109,20 @@ void MainWindow::onOpen()
 }
 
 void MainWindow::onSave() {}
+
+void MainWindow::onExportSvg()
+{
+  const QString fileName =
+      QFileDialog::getSaveFileName(this, "Export SVG", {}, "SVG (*.svg)");
+  if (fileName.isEmpty()) return;
+
+  const bool ok = vData->toSvg(fileName.toStdString());
+  if (!ok) {
+    QMessageBox::critical(
+        this, "Failed to save SVG",
+        QString("Failed to export the SVG to file %1").arg(fileName));
+  }
+}
 
 void MainWindow::zoomFit() { ui->countyMap->setMinimumSize({0, 0}); }
 void MainWindow::zoomMax() { ui->countyMap->setMinimumSize({2970, 1881}); }
@@ -199,10 +215,11 @@ void MainWindow::rebuildSvgFromData()
 
 void MainWindow::generateStatistics()
 {
-  const std::pair<size_t, double> countiesCompleted = vData->numberAndPercentVisited();
+  const std::pair<size_t, double> countiesCompleted =
+      vData->numberAndPercentVisited();
 
   ui->countiesCompleted->setText(QString("%1").arg(countiesCompleted.first));
 
-  ui->countiesCompletedPercent->setText(QString("%1\%").arg(countiesCompleted.second));
-
+  ui->countiesCompletedPercent->setText(
+      QString("%1\%").arg(countiesCompleted.second));
 }
