@@ -3,6 +3,8 @@ QCounties
 Someday, this intends to be a helpful tool to track your progress in visiting
 all the counties in the United States.
 
+![Screenshot](screenshot.png)
+
 Dependencies
 ============
 * Conan (and, thus, Python)
