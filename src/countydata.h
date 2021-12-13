@@ -22,7 +22,8 @@ public:
   bool readFromFile(const std::string& fileName);
 
   void setSvgColor(const std::string& color);
-  bool toSvg(const std::string& fileName) const;
+  bool writeSvg(const std::string& fileName) const;
+  std::string svg() const;
 
   size_t size() const { return mCounties.size(); }
 

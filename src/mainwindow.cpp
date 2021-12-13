@@ -122,7 +122,7 @@ void MainWindow::onExportSvg()
       QFileDialog::getSaveFileName(this, "Export SVG", {}, "SVG (*.svg)");
   if (fileName.isEmpty()) return;
 
-  const bool ok = vData->toSvg(fileName.toStdString());
+  const bool ok = vData->writeSvg(fileName.toStdString());
   if (!ok) {
     QMessageBox::critical(
         this, "Failed to save SVG",
@@ -214,16 +214,10 @@ void MainWindow::rebuildModelFromData()
 
 void MainWindow::rebuildSvgFromData()
 {
-  QFile f(countyMapResource);
-  assert(f.open(QFile::ReadOnly));
+  const std::string svg = vData->svg();
+  assert(!svg.empty());
 
-  // TODO: The compiler hangs when I use QTemporaryFile, what's going on
-  // here...?
-  QFile::remove("/tmp/fix-this");
-  const bool ok = vData->toSvg("/tmp/fix-this");
-  assert(ok);
-
-  ui->countyMap->load(QString("/tmp/fix-this"));
+  ui->countyMap->load(QByteArray(svg.c_str()));
   ui->countyMap->renderer()->setAspectRatioMode(Qt::KeepAspectRatio);
 }
 

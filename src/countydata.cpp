@@ -7,6 +7,7 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 // Fills the data from the known-accurate resource
 CountyData::CountyData()
@@ -190,12 +191,20 @@ void CountyData::setSvgColor(const std::string& color)
 }
 
 
-bool CountyData::toSvg(const std::string& fileName) const
+bool CountyData::writeSvg(const std::string& fileName) const
 {
   // HACK: The reverse of the constructor's situation, but pugixml doesn't mind
   // writing out the DOM without the closing </g> so no changes required
   // here...
   return vSvg.save_file(fileName.c_str());
+}
+
+
+std::string CountyData::svg() const
+{
+  std::stringstream ss;
+  vSvg.save(ss);
+  return ss.str();
 }
 
 
