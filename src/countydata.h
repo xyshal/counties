@@ -25,7 +25,10 @@ public:
 
   size_t size() const { return mCounties.size(); }
 
-
+  std::pair<size_t, double> numberAndPercentVisited() const;
+  //double percentVisited(const State&);
+  //double percentStatesCompleted() const;
+  //int statesVisited() const;
 
 private:
   std::vector<std::pair<County, bool>>::iterator findCounty(const County& c);

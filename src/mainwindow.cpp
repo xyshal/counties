@@ -135,6 +135,7 @@ void MainWindow::countyChanged(const QStandardItem* item)
   vData->setCountyVisited(county, visited);
 
   rebuildSvgFromData();
+  generateStatistics();
 }
 
 
@@ -142,6 +143,7 @@ void MainWindow::rebuildFromData()
 {
   rebuildModelFromData();
   rebuildSvgFromData();
+  generateStatistics();
 }
 
 
@@ -192,4 +194,15 @@ void MainWindow::rebuildSvgFromData()
 
   ui->countyMap->load(QString("/tmp/fix-this"));
   ui->countyMap->renderer()->setAspectRatioMode(Qt::KeepAspectRatio);
+}
+
+
+void MainWindow::generateStatistics()
+{
+  const std::pair<size_t, double> countiesCompleted = vData->numberAndPercentVisited();
+
+  ui->countiesCompleted->setText(QString("%1").arg(countiesCompleted.first));
+
+  ui->countiesCompletedPercent->setText(QString("%1\%").arg(countiesCompleted.second));
+
 }

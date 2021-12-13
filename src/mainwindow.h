@@ -36,6 +36,7 @@ private:
   void rebuildFromData();
   void rebuildModelFromData();
   void rebuildSvgFromData();
+  void generateStatistics();
 
 private:
   Ui::MainWindow* ui;

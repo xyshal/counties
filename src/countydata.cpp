@@ -4,6 +4,7 @@
 #include <QString>
 #include <QTextStream>
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <iostream>
 
@@ -172,6 +173,21 @@ bool CountyData::toSvg(const std::string& fileName) const
   // writing out the DOM without the closing </g> so no changes required
   // here...
   return vSvg.save_file(fileName.c_str());
+}
+
+
+// Note: Rounds to 0.1
+std::pair<size_t, double> CountyData::numberAndPercentVisited() const
+{
+  assert(mCounties.size() > 0U);
+  size_t visited = 0;
+  for (const auto& pair : mCounties) {
+    if (pair.second) visited++;
+  }
+  
+  const double percent = std::round(static_cast<double>(visited) / mCounties.size() * 100.0 * 10.0) / 10.0;
+
+  return {visited, percent};
 }
 
 
