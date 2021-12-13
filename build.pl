@@ -28,20 +28,10 @@ if (-e $buildDir && $param =~ /clean/) {
 unless (-e $buildDir) { mkdir $buildDir or die $!; }
 chdir $buildDir or die $!;
 
-RunCommandInConanEnv("cmake ..");
+RunCommandInConanEnv("cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release");
+RunCommandInConanEnv("ninja");
 
-my $makeCmd = "make";
-
+# TODO: Fix this on Mac OS and Windows at some point
 if ($^O eq "linux") {
-  my $nproc = `nproc`;
-  $makeCmd = "make -j$nproc";
-} elsif ($^O eq "MSWin32") {
-  $makeCmd = "msbuild qcounties.vcxproj";
-}
-
-RunCommandInConanEnv($makeCmd);
-
-# TODO: Fix this on Mac OS at some point!
-unless ($^O eq "darwin") {
   system("test/bin/test") == 0 or die "Test failures";
 }
