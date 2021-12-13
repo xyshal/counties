@@ -28,8 +28,18 @@ if (-e $buildDir && $param =~ /clean/) {
 unless (-e $buildDir) { mkdir $buildDir or die $!; }
 chdir $buildDir or die $!;
 
-RunCommandInConanEnv("cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release");
-RunCommandInConanEnv("ninja");
+if ($^O eq "MSWin32") {
+  RunCommandInConanEnv("cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release");
+  RunCommandInConanEnv("ninja");
+} else {
+  RunCommandInConanEnv("cmake ..");
+  my $buildCmd = "make";
+  if ($^O eq "linux") {
+    my $nproc = `nproc`;
+    $buildCmd .= " -j$nproc";
+  }
+  RunCommandInConanEnv($buildCmd);
+}
 
 # TODO: Fix this on Mac OS and Windows at some point
 if ($^O eq "linux") {
