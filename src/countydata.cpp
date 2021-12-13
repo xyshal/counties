@@ -166,7 +166,7 @@ bool CountyData::readFromFile(const std::string& fileName)
 }
 
 
-bool CountyData::toSvg(const std::string& fileName)
+bool CountyData::toSvg(const std::string& fileName) const
 {
   // HACK: The reverse of the constructor's situation, but pugixml doesn't mind
   // writing out the DOM without the closing </g> so no changes required

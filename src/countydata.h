@@ -21,9 +21,11 @@ public:
 
   bool readFromFile(const std::string& fileName);
 
-  bool toSvg(const std::string& fileName);
+  bool toSvg(const std::string& fileName) const;
 
   size_t size() const { return mCounties.size(); }
+
+
 
 private:
   std::vector<std::pair<County, bool>>::iterator findCounty(const County& c);
