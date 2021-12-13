@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 
+#include <QColorDialog>
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -35,6 +36,11 @@ MainWindow::MainWindow(QWidget* parent)
 
   connect(ui->actionQuit, &QAction::triggered, qApp, &QGuiApplication::quit,
           Qt::QueuedConnection);
+
+  // Edit Menu
+  connect(ui->actionChangeColor, &QAction::triggered, this,
+          &MainWindow::onColorChange);
+
 
   // View Menu
   connect(ui->actionZoom_In, &QAction::triggered, this, &MainWindow::zoomMax);
@@ -122,6 +128,15 @@ void MainWindow::onExportSvg()
         this, "Failed to save SVG",
         QString("Failed to export the SVG to file %1").arg(fileName));
   }
+}
+
+
+void MainWindow::onColorChange()
+{
+  const QColor color = QColorDialog::getColor(Qt::blue, this, "Pick a color");
+  if (!color.isValid()) return;
+  vData->setSvgColor(color.name().toStdString());
+  rebuildSvgFromData();
 }
 
 void MainWindow::zoomFit() { ui->countyMap->setMinimumSize({0, 0}); }

@@ -82,14 +82,15 @@ bool CountyData::setCountyVisited(const County& county, const bool visited)
   // Update the color in the SVG.  TODO: Avoid this duplication?
   const pugi::xml_node countyGroup = vSvg.child("svg").child("g");
   for (pugi::xml_node& child : countyGroup.children()) {
-    const County candidateCounty = County::fromString(child.attribute("id").value());
+    const County candidateCounty =
+        County::fromString(child.attribute("id").value());
     if (candidateCounty == county) {
       const pugi::xml_attribute color = child.attribute("fill");
       if (color.empty()) {
-        if (visited) child.append_attribute("fill") = "blue";
+        if (visited) child.append_attribute("fill") = vVisitedColor.c_str();
       } else {
         if (visited) {
-          child.attribute("fill") = "blue";
+          child.attribute("fill") = vVisitedColor.c_str();
         } else {
           child.remove_attribute(color);
         }
@@ -167,6 +168,28 @@ bool CountyData::readFromFile(const std::string& fileName)
 }
 
 
+/*!
+ * CountyData::setSvgColor
+ *
+ * \brief Sets the SVG color from its hex value (e.g. '#000000') or name (e.g.
+ * 'blue')
+ *
+ */
+void CountyData::setSvgColor(const std::string& color)
+{
+  assert(!color.empty());
+  vVisitedColor = color;
+
+  // Re-color the SVG for anything with a fill
+  const pugi::xml_node countyGroup = vSvg.child("svg").child("g");
+  for (pugi::xml_node& child : countyGroup.children()) {
+    if (!child.attribute("fill").empty()) {
+      child.attribute("fill") = vVisitedColor.c_str();
+    }
+  }
+}
+
+
 bool CountyData::toSvg(const std::string& fileName) const
 {
   // HACK: The reverse of the constructor's situation, but pugixml doesn't mind
@@ -184,8 +207,10 @@ std::pair<size_t, double> CountyData::numberAndPercentVisited() const
   for (const auto& pair : mCounties) {
     if (pair.second) visited++;
   }
-  
-  const double percent = std::round(static_cast<double>(visited) / mCounties.size() * 100.0 * 10.0) / 10.0;
+
+  const double percent = std::round(static_cast<double>(visited) /
+                                    mCounties.size() * 100.0 * 10.0) /
+                         10.0;
 
   return {visited, percent};
 }

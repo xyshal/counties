@@ -21,14 +21,15 @@ public:
 
   bool readFromFile(const std::string& fileName);
 
+  void setSvgColor(const std::string& color);
   bool toSvg(const std::string& fileName) const;
 
   size_t size() const { return mCounties.size(); }
 
   std::pair<size_t, double> numberAndPercentVisited() const;
-  //double percentVisited(const State&);
-  //double percentStatesCompleted() const;
-  //int statesVisited() const;
+  // double percentVisited(const State&);
+  // double percentStatesCompleted() const;
+  // int statesVisited() const;
 
 private:
   std::vector<std::pair<County, bool>>::iterator findCounty(const County& c);
@@ -40,5 +41,6 @@ public:
 
 private:
   pugi::xml_document vSvg;
+  std::string vVisitedColor = "blue";
 };
 

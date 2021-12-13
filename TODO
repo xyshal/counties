@@ -1,9 +1,10 @@
 Near term
 =========
-* State percentage counts in the parent tree item (stats generally)
 * CSV write (or just work on the "open" CSV file?) -- export otherwise
+* Make color selection persistent
+* State percentage counts in the parent tree item (stats generally)
 * What's up with the SVG and </g>
-* Some kind of image export.  PNG (or just svg?)
+* PNG image export
 * Packaging on all platforms?  AppImage, NSIS, DMG?
 
 Long term

@@ -27,6 +27,7 @@ private slots:
   void onOpen();
   void onSave();
   void onExportSvg();
+  void onColorChange();
   void zoomFit();
   void zoomMax();
 
