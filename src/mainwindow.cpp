@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QRegularExpression>
+#include <QScreen>
 #include <QStandardItemModel>
 #include <QString>
 #include <QSvgRenderer>
@@ -25,8 +26,10 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
-
   setWindowTitle("QCounties");
+
+  const QSize primaryScreenSize = QGuiApplication::screens()[0]->size();
+  resize(primaryScreenSize.width() * 0.6, primaryScreenSize.height() * 0.7);
 
   // File Menu
   connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::onOpen);
@@ -47,7 +50,7 @@ MainWindow::MainWindow(QWidget* parent)
   connect(ui->actionZoom_Out, &QAction::triggered, this, &MainWindow::zoomFit);
 
   // Data View
-  ui->dataSplitter->setSizes({1, 500});
+  ui->dataSplitter->setSizes({600, 1600});
 
   // SVG Widget
   ui->countyMap->load(QString(countyMapResource));
@@ -98,6 +101,8 @@ MainWindow::MainWindow(QWidget* parent)
   vModel->setHorizontalHeaderItem(VisitedColumn,
                                   new QStandardItem(QString("Visited")));
   ui->countyList->setModel(vModel);
+  ui->countyList->header()->resizeSection(0, 150);
+  ui->countyList->header()->resizeSection(1, 10);
 
   connect(vModel, &QStandardItemModel::itemChanged, this,
           &MainWindow::countyChanged);
