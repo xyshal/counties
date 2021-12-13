@@ -61,10 +61,17 @@ MainWindow::MainWindow(QWidget* parent)
   // TODO: Could implement partial checking and the ability to check/uncheck
   // entire states, but for now there's no visited column for the states.
   for (State state : AllStates()) {
-    auto stateItem = new QStandardItem(QString(AbbreviationForState(state)));
+    QStandardItem* stateItem =
+        new QStandardItem(QString(AbbreviationForState(state)));
     stateItem->setEditable(false);
     states[state] = stateItem;
-    vModel->invisibleRootItem()->appendRow(stateItem);
+
+    QStandardItem* visitedItem = new QStandardItem(VisitedColumn);
+    visitedItem->setEditable(false);
+
+    QList<QStandardItem*> items = {stateItem, visitedItem};
+
+    vModel->invisibleRootItem()->appendRow(items);
   }
 
   for (size_t i = 0; i < vData->size(); i++) {
@@ -76,6 +83,7 @@ MainWindow::MainWindow(QWidget* parent)
     countyItem->setEditable(false);
 
     QStandardItem* visitedItem = new QStandardItem(VisitedColumn);
+    visitedItem->setEditable(false);
     visitedItem->setCheckable(true);
     visitedItem->setCheckState(visited ? Qt::Checked : Qt::Unchecked);
     visitedItem->setData(QVariant::fromValue(i), Qt::UserRole);
@@ -230,5 +238,5 @@ void MainWindow::generateStatistics()
   ui->countiesCompleted->setText(QString("%1").arg(countiesCompleted.first));
 
   ui->countiesCompletedPercent->setText(
-      QString("%1\%").arg(countiesCompleted.second));
+      QString("%1%").arg(countiesCompleted.second));
 }
