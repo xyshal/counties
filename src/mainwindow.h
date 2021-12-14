@@ -49,8 +49,8 @@ private:
   Ui::MainWindow* ui;
 
   QStandardItemModel* vModel;
-  std::shared_ptr<CountyData> vData;
-  std::shared_ptr<Preferences> vPreferences;
+  std::unique_ptr<CountyData> vData;
+  std::unique_ptr<Preferences> vPreferences;
 
   // TODO: Isn't there a better way to do this these days?
   bool vLoadingFromData = false;

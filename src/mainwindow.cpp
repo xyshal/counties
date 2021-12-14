@@ -27,8 +27,8 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
   // Keep headers off the interface, since that seems to be the Qt way.
-  vData = std::make_shared<CountyData>();
-  vPreferences = std::make_shared<Preferences>();
+  vData = std::make_unique<CountyData>();
+  vPreferences = std::make_unique<Preferences>();
 
   // Preserve color choice
   vData->setSvgColor(vPreferences->mVisitedColor);
