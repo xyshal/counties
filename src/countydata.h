@@ -20,10 +20,11 @@ public:
   bool setCountyVisited(const County& c, const bool visited);
 
   bool readFromFile(const std::string& fileName);
+  bool writeToFile(const std::string& fileName) const;
 
   void setSvgColor(const std::string& color);
-  bool writeSvg(const std::string& fileName) const;
-  std::string svg() const;
+  bool writeSvg(const std::string& fileName);
+  std::string svg();
 
   size_t size() const { return mCounties.size(); }
 
@@ -37,11 +38,14 @@ private:
   std::vector<std::pair<County, bool>>::const_iterator findCounty(
       const County& c) const;
 
+  void rebuildSvg();
+
 public:
   std::vector<std::pair<County, bool>> mCounties;
 
 private:
   pugi::xml_document vSvg;
   std::string vVisitedColor = "blue";
+  bool vSvgDirty = false;
 };
 

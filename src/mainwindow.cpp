@@ -114,7 +114,8 @@ MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::onOpen()
 {
-  const QString fileName = QFileDialog::getOpenFileName(this, "Open File");
+  const QString fileName = QFileDialog::getOpenFileName(
+      this, "Open File", {}, "Comma-separated Values (*.csv)");
   if (fileName.isEmpty()) return;
 
   const bool ok = vData->readFromFile(fileName.toStdString());
@@ -127,12 +128,25 @@ void MainWindow::onOpen()
   rebuildFromData();
 }
 
-void MainWindow::onSave() {}
+void MainWindow::onSave()
+{
+  const QString fileName = QFileDialog::getSaveFileName(
+      this, "Export CSV", {}, "Comma-separated Values (*.csv)");
+  if (fileName.isEmpty()) return;
+
+  const bool ok = vData->writeToFile(fileName.toStdString());
+
+  if (!ok) {
+    QMessageBox::critical(
+        this, "Failed to save CSV",
+        QString("Failed to export the CSV to file %1").arg(fileName));
+  }
+}
 
 void MainWindow::onExportSvg()
 {
-  const QString fileName =
-      QFileDialog::getSaveFileName(this, "Export SVG", {}, "SVG (*.svg)");
+  const QString fileName = QFileDialog::getSaveFileName(
+      this, "Export SVG", {}, "Scalable Vector Graphic (*.svg)");
   if (fileName.isEmpty()) return;
 
   const bool ok = vData->writeSvg(fileName.toStdString());

@@ -80,24 +80,7 @@ bool CountyData::setCountyVisited(const County& county, const bool visited)
   if (it == mCounties.end()) return false;
   (*it).second = visited;
 
-  // Update the color in the SVG.  TODO: Avoid this duplication?
-  const pugi::xml_node countyGroup = vSvg.child("svg").child("g");
-  for (pugi::xml_node& child : countyGroup.children()) {
-    const County candidateCounty =
-        County::fromString(child.attribute("id").value());
-    if (candidateCounty == county) {
-      const pugi::xml_attribute color = child.attribute("fill");
-      if (color.empty()) {
-        if (visited) child.append_attribute("fill") = vVisitedColor.c_str();
-      } else {
-        if (visited) {
-          child.attribute("fill") = vVisitedColor.c_str();
-        } else {
-          child.remove_attribute(color);
-        }
-      }
-    }
-  }
+  vSvgDirty = true;
 
   return true;
 }
@@ -169,6 +152,22 @@ bool CountyData::readFromFile(const std::string& fileName)
 }
 
 
+bool CountyData::writeToFile(const std::string& fileName) const
+{
+  std::ofstream f;
+  f.open(fileName);
+  if (!f.is_open()) return false;
+
+  for (const auto& countyPair : mCounties) {
+    f << countyPair.first.toString() << ",";
+    f << (countyPair.second ? "1" : "0");
+    f << "\n";
+  }
+
+  return true;
+}
+
+
 /*!
  * CountyData::setSvgColor
  *
@@ -191,17 +190,21 @@ void CountyData::setSvgColor(const std::string& color)
 }
 
 
-bool CountyData::writeSvg(const std::string& fileName) const
+bool CountyData::writeSvg(const std::string& fileName)
 {
-  // HACK: The reverse of the constructor's situation, but pugixml doesn't mind
-  // writing out the DOM without the closing </g> so no changes required
+  if (vSvgDirty) rebuildSvg();
+
+  // HACK: The reverse of the constructor's situation, but pugixml doesn't
+  // mind writing out the DOM without the closing </g> so no changes required
   // here...
   return vSvg.save_file(fileName.c_str());
 }
 
 
-std::string CountyData::svg() const
+std::string CountyData::svg()
 {
+  if (vSvgDirty) rebuildSvg();
+
   std::stringstream ss;
   vSvg.save(ss);
   return ss.str();
@@ -257,3 +260,24 @@ std::vector<std::pair<County, bool>>::const_iterator CountyData::findCounty(
   return it;
 }
 
+
+// Updates the colors in the SVG.  TODO: Avoid this duplication?
+void CountyData::rebuildSvg()
+{
+  const pugi::xml_node countyGroup = vSvg.child("svg").child("g");
+  for (pugi::xml_node& child : countyGroup.children()) {
+    const County county = County::fromString(child.attribute("id").value());
+    const bool visited = findCounty(county)->second;
+    const pugi::xml_attribute color = child.attribute("fill");
+    if (color.empty()) {
+      if (visited) child.append_attribute("fill") = vVisitedColor.c_str();
+    } else {
+      if (visited) {
+        child.attribute("fill") = vVisitedColor.c_str();
+      } else {
+        child.remove_attribute(color);
+      }
+    }
+  }
+  vSvgDirty = false;
+}

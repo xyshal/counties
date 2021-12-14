@@ -4,7 +4,8 @@
 
 std::string County::toString() const
 {
-  return std::string() + "\"" + name + "\", " + AbbreviationForState(state);
+  return std::string() + "\"" + name + ", " + AbbreviationForState(state) +
+         "\"";
 }
 
 County County::fromString(const std::string& id_)
