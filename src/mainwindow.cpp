@@ -326,6 +326,9 @@ void MainWindow::generateStatistics()
         // mixed-value state?
         item->setCheckable(true);
         item->setCheckState(Qt::Checked);
+      } else {
+        item->setCheckState(Qt::Unchecked);
+        item->setCheckable(false);
       }
     }
   }
