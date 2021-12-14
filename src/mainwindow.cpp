@@ -17,10 +17,11 @@
 #include <unordered_map>
 
 #include "./ui_mainwindow.h"
+#include "config.h"
 #include "countydata.h"
 #include "preferences.h"
 
-static constexpr auto countyMapResource = ":/Usa_counties_large.svg";
+static constexpr auto CountyMapResource = ":/Usa_counties_large.svg";
 
 static constexpr int NameColumn = 0;
 static constexpr int VisitedColumn = 1;
@@ -36,7 +37,7 @@ MainWindow::MainWindow(QWidget* parent)
   vData->setSvgColor(vPreferences->mVisitedColor);
 
   ui->setupUi(this);
-  setWindowTitle("QCounties");
+  setWindowTitle(QString("%1 %2").arg(PROJECT_NAME).arg(PROJECT_VER));
 
   const QSize primaryScreenSize = QGuiApplication::screens()[0]->size();
   resize(primaryScreenSize.width() * 0.6, primaryScreenSize.height() * 0.7);
@@ -65,7 +66,7 @@ MainWindow::MainWindow(QWidget* parent)
   ui->dataSplitter->setSizes({600, 1600});
 
   // SVG Widget
-  ui->countyMap->load(QString(countyMapResource));
+  ui->countyMap->load(QString(CountyMapResource));
   ui->countyMap->renderer()->setAspectRatioMode(Qt::KeepAspectRatio);
   connect(ui->countyMap, &SvgWidget::clicked, this, &MainWindow::mapClicked);
 

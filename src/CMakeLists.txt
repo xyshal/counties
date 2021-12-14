@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
-project(qcounties VERSION 0.1 LANGUAGES CXX)
+project(qcounties VERSION 1.0 LANGUAGES CXX)
+
+configure_file(config.h.in config.h)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
