@@ -242,16 +242,11 @@ Statistics CountyData::statistics() const
     }
   }
 
-  // DC is its own entity in the SVG, but it isn't really a state, so we need
-  // to exclude its State enum equivalent here.
-  auto it = visitedCountiesPerState.find(State::District_Of_Columbia);
-  if (it != visitedCountiesPerState.end()) {
-    visitedCountiesPerState.erase(it);
-  }
-
   // Gather state-level data
   size_t totalStatesCompleted = 0U;
   for (const State& state : AllStates()) {
+    // DC is its own entity in the SVG and in the tree view, but it isn't
+    // really a state, so we need to exclude its State enum equivalent here.
     if (state == State::District_Of_Columbia) continue;
     assert(vCountiesPerState.contains(state));
     if (visitedCountiesPerState.contains(state) &&
@@ -271,10 +266,28 @@ Statistics CountyData::statistics() const
                  (AllStates().size() - 1) * 100.0 * 10.0) /
       10.0;
 
-  return {.countiesVisited = totalVisitedCounties,
-          .percentCountiesVisited = percentCountiesVisited,
-          .statesCompleted = totalStatesCompleted,
-          .percentStatesCompleted = percentStatesCompleted};
+
+  Statistics stats;
+  stats.countiesVisited = totalVisitedCounties;
+  stats.percentCountiesVisited = percentCountiesVisited;
+  stats.statesCompleted = totalStatesCompleted;
+  stats.percentStatesCompleted = percentStatesCompleted;
+
+  for (const State& state : AllStates()) {
+    if (!visitedCountiesPerState.contains(state)) {
+      stats.countiesAndPercentCompletePerState[state] = {0U, 0.0};
+    } else {
+      const size_t countiesVisitedInState = visitedCountiesPerState.at(state);
+      const double percentOfState =
+          std::round(static_cast<double>(countiesVisitedInState) /
+                     vCountiesPerState.at(state) * 100.0 * 10.0) /
+          10.0;
+      stats.countiesAndPercentCompletePerState[state] = {countiesVisitedInState,
+                                                         percentOfState};
+    }
+  }
+
+  return stats;
 }
 
 

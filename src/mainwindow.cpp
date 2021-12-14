@@ -82,7 +82,10 @@ MainWindow::MainWindow(QWidget* parent)
     states[state] = stateItem;
 
     QStandardItem* visitedItem = new QStandardItem(VisitedColumn);
+    visitedItem->setText("0 (0%)");
     visitedItem->setEditable(false);
+    visitedItem->setCheckable(false);
+    visitedItem->setData(QVariant::fromValue(state), Qt::UserRole);
 
     QList<QStandardItem*> items = {stateItem, visitedItem};
 
@@ -289,6 +292,7 @@ void MainWindow::rebuildSvgFromData()
 
 void MainWindow::generateStatistics()
 {
+  // Top-level stats
   const Statistics stats = vData->statistics();
 
   ui->countiesCompleted->setText(QString("%1").arg(stats.countiesVisited));
@@ -300,4 +304,31 @@ void MainWindow::generateStatistics()
 
   ui->statesCompletedPercent->setText(
       QString("%1%").arg(stats.percentStatesCompleted));
+
+  // State-level stats
+  const bool loading = vLoadingFromData;
+  vLoadingFromData = true;
+
+  const QModelIndex invisibleRootItem;
+  const int nRows = vModel->rowCount(invisibleRootItem);
+  for (int i = 0; i < nRows; i++) {
+    QModelIndex idx = vModel->index(i, VisitedColumn, invisibleRootItem);
+    bool ok = false;
+    const State state = static_cast<State>(idx.data(Qt::UserRole).toUInt(&ok));
+    if (ok) {
+      const std::pair<size_t, double>& pair =
+          stats.countiesAndPercentCompletePerState.at(state);
+      QStandardItem* item = vModel->itemFromIndex(idx);
+      item->setText(QString("%1 (%2%)").arg(pair.first).arg(pair.second));
+      if (pair.second == 100.0) {
+        // TODO: Is this just confusing?  Should this be a mechanism for
+        // marking all the counties as visited or not visited, with a
+        // mixed-value state?
+        item->setCheckable(true);
+        item->setCheckState(Qt::Checked);
+      }
+    }
+  }
+
+  vLoadingFromData = loading;
 }

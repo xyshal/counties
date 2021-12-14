@@ -13,6 +13,9 @@ struct Statistics {
 
   size_t statesCompleted = 0U;
   double percentStatesCompleted = 0.0;
+
+  std::unordered_map<State, std::pair<size_t, double>>
+      countiesAndPercentCompletePerState;
 };
 
 class CountyData
