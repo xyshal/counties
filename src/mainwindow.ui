@@ -108,6 +108,7 @@
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="actionExportSvg"/>
+    <addaction name="actionExportPng"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -186,6 +187,11 @@
   <action name="actionChangeColor">
    <property name="text">
     <string>&amp;Change Visited Color</string>
+   </property>
+  </action>
+  <action name="actionExportPng">
+   <property name="text">
+    <string>Export &amp;PNG</string>
    </property>
   </action>
  </widget>

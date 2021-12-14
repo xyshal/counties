@@ -1,11 +1,5 @@
-Near term
-=========
 * State percentage counts in the parent tree item (stats generally)
-* What's up with the SVG and </g>
-* PNG image export
-* Packaging on all platforms?  AppImage, NSIS, DMG?
-
-Long term
-=========
 * Get click mapping working
+* Packaging on all platforms?  AppImage, NSIS, DMG?
+* What's up with the SVG and </g>
 * Context menu on tree view, incuding "mark all state's counties as visited"?

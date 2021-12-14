@@ -3,8 +3,10 @@
 #include <QColorDialog>
 #include <QFile>
 #include <QFileDialog>
+#include <QImage>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QPainter>
 #include <QRegularExpression>
 #include <QScreen>
 #include <QStandardItemModel>
@@ -44,6 +46,8 @@ MainWindow::MainWindow(QWidget* parent)
   connect(ui->actionSave, &QAction::triggered, this, &MainWindow::onSave);
   connect(ui->actionExportSvg, &QAction::triggered, this,
           &MainWindow::onExportSvg);
+  connect(ui->actionExportPng, &QAction::triggered, this,
+          &MainWindow::onExportPng);
 
   connect(ui->actionQuit, &QAction::triggered, qApp, &QGuiApplication::quit,
           Qt::QueuedConnection);
@@ -162,6 +166,29 @@ void MainWindow::onExportSvg()
     QMessageBox::critical(
         this, "Failed to save SVG",
         QString("Failed to export the SVG to file %1").arg(fileName));
+  }
+}
+
+
+void MainWindow::onExportPng()
+{
+  const QString fileName = QFileDialog::getSaveFileName(
+      this, "Export PNG", {}, "Portable Network Graphics (*.png)");
+  if (fileName.isEmpty()) return;
+
+  QImage image(5940, 3762, QImage::Format_ARGB32);
+  image.fill(QColor("white"));
+  // TODO: Upgrade Qt
+  // image.fill(QColorConstants::Svg::white);
+
+  QPainter painter(&image);
+  ui->countyMap->renderer()->render(&painter);
+
+  const bool ok = image.save(fileName);
+  if (!ok) {
+    QMessageBox::critical(
+        this, "Failed to save PNG",
+        QString("Failed to export the PNG to file %1").arg(fileName));
   }
 }
 
