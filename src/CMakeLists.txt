@@ -38,6 +38,8 @@ set(PROJECT_SOURCES
   mainwindow.cpp
   mainwindow.h
   mainwindow.ui
+  preferences.cpp
+  preferences.h
   svgwidget.h
 )
 

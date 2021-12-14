@@ -16,6 +16,7 @@
 
 #include "./ui_mainwindow.h"
 #include "countydata.h"
+#include "preferences.h"
 
 static constexpr auto countyMapResource = ":/Usa_counties_large.svg";
 
@@ -25,6 +26,13 @@ static constexpr int VisitedColumn = 1;
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
+  // Keep headers off the interface, since that seems to be the Qt way.
+  vData = std::make_shared<CountyData>();
+  vPreferences = std::make_shared<Preferences>();
+
+  // Preserve color choice
+  vData->setSvgColor(vPreferences->mVisitedColor);
+
   ui->setupUi(this);
   setWindowTitle("QCounties");
 
@@ -162,7 +170,10 @@ void MainWindow::onColorChange()
 {
   const QColor color = QColorDialog::getColor(Qt::blue, this, "Pick a color");
   if (!color.isValid()) return;
-  vData->setSvgColor(color.name().toStdString());
+  const std::string colorName = color.name().toStdString();
+  vData->setSvgColor(colorName);
+  vPreferences->mVisitedColor = colorName;
+
   rebuildSvgFromData();
 }
 

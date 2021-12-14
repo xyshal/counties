@@ -1,7 +1,5 @@
 Near term
 =========
-* CSV write (or just work on the "open" CSV file?) -- export otherwise
-* Make color selection persistent
 * State percentage counts in the parent tree item (stats generally)
 * What's up with the SVG and </g>
 * PNG image export

@@ -3,8 +3,8 @@
 #include <QMainWindow>
 #include <memory>
 
-#include "countydata.h"
-
+class CountyData;
+class Preferences;
 class QStandardItem;
 class QStandardItemModel;
 
@@ -22,6 +22,11 @@ class MainWindow : public QMainWindow
 public:
   MainWindow(QWidget* parent = nullptr);
   ~MainWindow();
+
+  MainWindow(const MainWindow&) = delete;
+  MainWindow(MainWindow&&) = delete;
+  MainWindow& operator=(const MainWindow&) = delete;
+  MainWindow& operator=(MainWindow&&) = delete;
 
 private slots:
   void onOpen();
@@ -42,8 +47,10 @@ private:
 
 private:
   Ui::MainWindow* ui;
+
   QStandardItemModel* vModel;
-  std::shared_ptr<CountyData> vData = std::make_shared<CountyData>();
+  std::shared_ptr<CountyData> vData;
+  std::shared_ptr<Preferences> vPreferences;
 
   // TODO: Isn't there a better way to do this these days?
   bool vLoadingFromData = false;
