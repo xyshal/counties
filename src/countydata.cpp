@@ -45,9 +45,18 @@ CountyData::CountyData()
 
     size_t nPaths = 0;
     for (const pugi::xml_node& child : countyGroup.children()) {
+      // Counties
       const County county = County::fromString(child.attribute("id").value());
       constexpr bool visited = false;
       mCounties.push_back({county, visited});
+
+      // States
+      if (vCountiesPerState.contains(county.state)) {
+        vCountiesPerState[county.state]++;
+      } else {
+        vCountiesPerState[county.state] = 1;
+      }
+
       nPaths++;
     }
     assert(mCounties.size() == 3143U);
@@ -211,20 +220,61 @@ std::string CountyData::svg()
 }
 
 
-// Note: Rounds to 0.1
-std::pair<size_t, double> CountyData::numberAndPercentVisited() const
+Statistics CountyData::statistics() const
 {
   assert(mCounties.size() > 0U);
-  size_t visited = 0;
+
+  size_t totalVisitedCounties = 0U;
+  std::unordered_map<State, size_t> visitedCountiesPerState;
+
+  // Gather county-level data
   for (const auto& pair : mCounties) {
-    if (pair.second) visited++;
+    const County& county = pair.first;
+    const bool& visited = pair.second;
+    if (visited) {
+      totalVisitedCounties++;
+
+      if (visitedCountiesPerState.contains(county.state)) {
+        visitedCountiesPerState[county.state]++;
+      } else {
+        visitedCountiesPerState[county.state] = 1;
+      }
+    }
   }
 
-  const double percent = std::round(static_cast<double>(visited) /
-                                    mCounties.size() * 100.0 * 10.0) /
-                         10.0;
+  // DC is its own entity in the SVG, but it isn't really a state, so we need
+  // to exclude its State enum equivalent here.
+  auto it = visitedCountiesPerState.find(State::District_Of_Columbia);
+  if (it != visitedCountiesPerState.end()) {
+    visitedCountiesPerState.erase(it);
+  }
 
-  return {visited, percent};
+  // Gather state-level data
+  size_t totalStatesCompleted = 0U;
+  for (const State& state : AllStates()) {
+    if (state == State::District_Of_Columbia) continue;
+    assert(vCountiesPerState.contains(state));
+    if (visitedCountiesPerState.contains(state) &&
+        visitedCountiesPerState.at(state) == vCountiesPerState.at(state)) {
+      totalStatesCompleted++;
+    }
+  }
+
+  // Calculate percentages (which are rounding to 0.1)
+  const double percentCountiesVisited =
+      std::round(static_cast<double>(totalVisitedCounties) / mCounties.size() *
+                 100.0 * 10.0) /
+      10.0;
+
+  const double percentStatesCompleted =
+      std::round(static_cast<double>(totalStatesCompleted) /
+                 (AllStates().size() - 1) * 100.0 * 10.0) /
+      10.0;
+
+  return {.countiesVisited = totalVisitedCounties,
+          .percentCountiesVisited = percentCountiesVisited,
+          .statesCompleted = totalStatesCompleted,
+          .percentStatesCompleted = percentStatesCompleted};
 }
 
 

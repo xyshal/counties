@@ -1,10 +1,19 @@
 #pragma once
 
 #include <pugixml.hpp>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
 #include "county.h"
+
+struct Statistics {
+  size_t countiesVisited = 0U;
+  double percentCountiesVisited = 0.0;
+
+  size_t statesCompleted = 0U;
+  double percentStatesCompleted = 0.0;
+};
 
 class CountyData
 {
@@ -28,10 +37,7 @@ public:
 
   size_t size() const { return mCounties.size(); }
 
-  std::pair<size_t, double> numberAndPercentVisited() const;
-  // double percentVisited(const State&);
-  // double percentStatesCompleted() const;
-  // int statesVisited() const;
+  Statistics statistics() const;
 
 private:
   std::vector<std::pair<County, bool>>::iterator findCounty(const County& c);
@@ -47,5 +53,7 @@ private:
   pugi::xml_document vSvg;
   std::string vVisitedColor = "blue";
   bool vSvgDirty = false;
+
+  std::unordered_map<State, size_t> vCountiesPerState;
 };
 

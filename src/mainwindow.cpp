@@ -289,11 +289,15 @@ void MainWindow::rebuildSvgFromData()
 
 void MainWindow::generateStatistics()
 {
-  const std::pair<size_t, double> countiesCompleted =
-      vData->numberAndPercentVisited();
+  const Statistics stats = vData->statistics();
 
-  ui->countiesCompleted->setText(QString("%1").arg(countiesCompleted.first));
+  ui->countiesCompleted->setText(QString("%1").arg(stats.countiesVisited));
 
   ui->countiesCompletedPercent->setText(
-      QString("%1%").arg(countiesCompleted.second));
+      QString("%1%").arg(stats.percentCountiesVisited));
+
+  ui->statesCompleted->setText(QString("%1").arg(stats.statesCompleted));
+
+  ui->statesCompletedPercent->setText(
+      QString("%1%").arg(stats.percentStatesCompleted));
 }
