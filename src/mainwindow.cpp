@@ -84,7 +84,8 @@ MainWindow::MainWindow(QWidget* parent)
     QStandardItem* visitedItem = new QStandardItem(VisitedColumn);
     visitedItem->setText("0 (0%)");
     visitedItem->setEditable(false);
-    visitedItem->setCheckable(false);
+    visitedItem->setCheckable(true);
+    item->setCheckState(Qt::Unchecked);
     visitedItem->setData(QVariant::fromValue(state), Qt::UserRole);
 
     QList<QStandardItem*> items = {stateItem, visitedItem};
