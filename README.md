@@ -1,9 +1,16 @@
 QCounties
 =========
-Someday, this intends to be a helpful tool to track your progress in visiting
+This is intended to be a helpful tool for tracking your progress in visiting
 all the counties in the United States.
 
-![Screenshot](screenshot.png)
+![Screenshot](etc/screenshot.png)
+
+The map updates as you modify the checkboxes in the tree view, and you get
+various statistics about your progress.  You can also export the map as an SVG
+or PNG.
+
+The file format is just a CSV with a pair of (county name, visited boolean), so
+you can also make changes in your favorite text editor.
 
 Dependencies
 ============
@@ -12,4 +19,10 @@ Dependencies
 
 Compiling
 =========
-Theoretically, you ought to be able to just `perl build.pl && perl run.pl`
+Theoretically, you ought to be able to just `perl build.pl && perl run.pl`.
+
+Builds are sporadically run on:
+* Mac OS 10.15
+* Debian buster
+* Arch
+* Windows 10
