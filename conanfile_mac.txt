@@ -2,6 +2,7 @@
 cmake/[>=3.5]
 
 [requires]
+fast-cpp-csv-parser/cci.20200830
 gtest/1.11.0
 openssl/1.1.1l
 pugixml/1.11

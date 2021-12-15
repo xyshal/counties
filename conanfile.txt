@@ -1,5 +1,6 @@
 [requires]
 cmake/3.21.1
+fast-cpp-csv-parser/cci.20200830
 gtest/1.11.0
 pugixml/1.11
 qt/6.1.3

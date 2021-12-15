@@ -13,6 +13,7 @@
 #include <QString>
 #include <QSvgRenderer>
 #include <QSvgWidget>
+#include <exception>
 #include <iostream>
 #include <unordered_map>
 
@@ -135,7 +136,15 @@ void MainWindow::onOpen()
       this, "Open File", {}, "Comma-separated Values (*.csv)");
   if (fileName.isEmpty()) return;
 
-  const bool ok = vData->readFromFile(fileName.toStdString());
+  const bool ok = [this,fileName]() {
+    try { // The CSV parsing library uses exceptions
+      return vData->readFromFile(fileName.toStdString());
+    } catch (const std::exception& e) {
+      std::cout << e.what() << "\n";
+      return false;
+    }
+  }();
+
   if (!ok) {
     // TODO: Report here instead of the command line
     QMessageBox::critical(

@@ -23,11 +23,13 @@ find_package(Qt6
 
 set(CMAKE_AUTORCC ON)
 
+find_package(fast-cpp-csv-parser REQUIRED)
 find_package(GTest REQUIRED)
 find_package(pugixml REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${PROJECT_SOURCE_DIR}/../src)
+include_directories(${fast-cpp-csv-parser_INCLUDE_DIR})
 
 # TODO: Double-compiling test sources.  Make them into a static library if they
 # get too numerous.

@@ -23,6 +23,7 @@ find_package(Qt6
                Xml
              REQUIRED)
 
+find_package(fast-cpp-csv-parser REQUIRED)
 find_package(pugixml REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -47,6 +48,8 @@ set(PROJECT_SOURCES
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_SOURCE_DIR}/../resources/resources.qrc)
 
+include_directories(${fast-cpp-csv-parser_INCLUDE_DIR})
+
 target_link_libraries(${PROJECT_NAME}
                       Qt6::Core
                       Qt6::Xml
@@ -59,7 +62,7 @@ qt_finalize_executable(${PROJECT_NAME})
 
 # Avoid the need for QT_QPA_PLATFORM_PLUGIN_PATH being set in dev builds
 if (UNIX)
-  write_file(${CMAKE_BINARY_DIR}/bin/qt.conf "[Paths]\nPrefix = ${CONAN_QT_ROOT}/res/archdatadir")
+  write_file(${CMAKE_BINARY_DIR}/src/bin/qt.conf "[Paths]\nPrefix = ${CONAN_QT_ROOT}/res/archdatadir")
 endif (UNIX)
 
 # copydlls.bat

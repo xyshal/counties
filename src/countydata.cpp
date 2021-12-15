@@ -1,5 +1,7 @@
 #include "countydata.h"
 
+#include <csv.h>
+
 #include <QFile>
 #include <QString>
 #include <QTextStream>
@@ -109,41 +111,25 @@ bool CountyData::setCountyVisited(const County& county, const bool visited)
  */
 bool CountyData::readFromFile(const std::string& fileName)
 {
-  std::ifstream f(fileName);
-  if (!f.is_open()) {
-    std::cerr << "Failed to open file '" << fileName << "'\n";
-    return false;
-  }
-
+  io::CSVReader<2, io::trim_chars<' '>, io::double_quote_escape<',', '"'>> reader(fileName);
+  reader.read_header(io::ignore_extra_column, "county", "visited");
+ 
   bool ok = true;
-
-  std::string line;
   unsigned i = 0;
-  while (std::getline(f, line)) {
+  std::string county_;
+  std::string visited_;
+  while (reader.read_row(county_, visited_)) {
     i++;
 
-    // Split the county identifier and whether it was visited
-    const size_t firstComma = line.find(",");
-    const size_t delimiter = line.find(",", firstComma + 1);
-    if (delimiter == std::string::npos) {
-      std::cerr << "Warning: Skipping line " << i
-                << ", which had unexpected format: " << line << "\n";
-      ok = false;
-      continue;
-    }
-
-    std::string id = line.substr(0, delimiter);
-
-    const County county = County::fromString(id);
+    const County county = County::fromString(county_);
     if (county.state == State::NStates) {
       std::cerr << "Warning: Skipping line " << i
-                << ", which had unrecognized data " << line << "\n";
+                << ", which had unrecognized data " << county_ << "\n";
       ok = false;
       continue;
     }
 
     const bool visited = [&]() -> bool {
-      const std::string visited_ = line.substr(delimiter + 1);
       if (visited_ == "0") return false;
       if (visited_ == "1") return true;
       std::cerr << "Warning: unexpected value '" << visited_ << "' at line "
@@ -167,6 +153,7 @@ bool CountyData::writeToFile(const std::string& fileName) const
   f.open(fileName);
   if (!f.is_open()) return false;
 
+  f << "county,visited\n";
   for (const auto& countyPair : mCounties) {
     f << countyPair.first.toString() << ",";
     f << (countyPair.second ? "1" : "0");

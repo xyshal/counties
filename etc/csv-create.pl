@@ -13,6 +13,7 @@ chomp(my @contents = <$SVG>);
 close $SVG;
 
 open(my $CSVFILE, '>', "$csv") or die("Failed to open $csv");
+print $CSVFILE "county,visited\n";
 foreach my $line(@contents) {
   print $CSVFILE "\"$1\",0\n" if $line =~ m/id="([^"]*,[^"]*)"/;
 }
