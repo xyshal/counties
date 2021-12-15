@@ -1,18 +1,40 @@
+/*
+ * Copyright (C) 2021 Owen Schandle
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #include "mainwindow.h"
 
 #include <QColorDialog>
+#include <QDesktopServices>
 #include <QFile>
 #include <QFileDialog>
 #include <QImage>
+#include <QLabel>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPushButton>
 #include <QRegularExpression>
 #include <QScreen>
 #include <QStandardItemModel>
 #include <QString>
 #include <QSvgRenderer>
 #include <QSvgWidget>
+#include <QTextBrowser>
+#include <QUrl>
 #include <exception>
 #include <iostream>
 #include <unordered_map>
@@ -62,6 +84,9 @@ MainWindow::MainWindow(QWidget* parent)
   // View Menu
   connect(ui->actionZoom_In, &QAction::triggered, this, &MainWindow::zoomMax);
   connect(ui->actionZoom_Out, &QAction::triggered, this, &MainWindow::zoomFit);
+
+  // Help Menu
+  connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::onAbout);
 
   // Data View
   ui->dataSplitter->setSizes({600, 1600});
@@ -221,6 +246,68 @@ void MainWindow::onColorChange()
 
 void MainWindow::zoomFit() { ui->countyMap->setMinimumSize({0, 0}); }
 void MainWindow::zoomMax() { ui->countyMap->setMinimumSize({2970, 1881}); }
+
+void MainWindow::onAbout()
+{
+  QDialog aboutDialog(this);
+  aboutDialog.setModal(true);
+  aboutDialog.setWindowFlags(Qt::Dialog);
+  aboutDialog.setWindowTitle(
+      QString("About %1 %2").arg(PROJECT_NAME).arg(PROJECT_VER));
+
+  QTextBrowser* infoWidget = new QTextBrowser(&aboutDialog);
+  infoWidget->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
+  infoWidget->setOpenLinks(false);
+  // clang-format off
+  infoWidget->setText(
+    "Thanks for using this application!<br><br>"
+    "This program is intended to help visualize how many counties you've visited "
+    "in the United States.  Use the checkboxes in the tree view to toggle whether "
+    "you've visited the specified county, and the results ought to appear in the map."
+    "<br><br>"
+    "You can save your work as a CSV and open it again later, and can export the map "
+    "to SVG or PNG."
+    "<br><br>"
+    "To file an issue or contribute to development, please visit this project's "
+    "Github page at <a href=\"https://github.com/xyshal/counties\">https://github.com/xyshal/counties</a>"
+    "<br><br>"
+    "In the event that the project gets relocated, hopefully you can find a reference to it "
+    "at my <a href=\"http://www.schandle.com\">personal website</a>");
+  // clang-format on
+  connect(infoWidget, &QTextBrowser::anchorClicked, this,
+          [](const QUrl& link) { QDesktopServices::openUrl(link); });
+
+  // clang-format off
+  const QString gplCopyrightNotice = QString("Copyright (C) 2021 Owen Schandle\n") +
+
+    "This program is free software: you can redistribute it and/or modify it under\n" +
+    "the terms of the GNU General Public License as published by the Free Software\n" +
+    "Foundation, either version 3 of the License, or (at your option) any later\n" +
+    "version.\n\n" +
+    
+    "This program is distributed in the hope that it will be useful, but WITHOUT\n" +
+    "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS\n" +
+    "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more\n" +
+    "details.\n\n"
+    
+    "You should have received a copy of the GNU General Public License along with\n" +
+    "this program.  If not, see <https://www.gnu.org/licenses/>.\n";
+  // clang-format on
+
+  QLabel* gplLabel = new QLabel(&aboutDialog);
+  gplLabel->setText(gplCopyrightNotice);
+
+  QPushButton* okBtn = new QPushButton(&aboutDialog);
+  okBtn->setText("OK!");
+  connect(okBtn, &QPushButton::clicked, &aboutDialog, &QWidget::close);
+
+  QVBoxLayout* layout = new QVBoxLayout(&aboutDialog);
+  layout->addWidget(infoWidget);
+  layout->addWidget(gplLabel);
+  layout->addWidget(okBtn);
+
+  aboutDialog.exec();
+}
 
 void MainWindow::mapClicked(const QMouseEvent* e)
 {
