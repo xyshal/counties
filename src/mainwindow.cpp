@@ -259,8 +259,7 @@ void MainWindow::onAbout()
   infoWidget->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
   infoWidget->setOpenLinks(false);
   // clang-format off
-  infoWidget->setText(
-    "Thanks for using this application!<br><br>"
+  const QString infoText = QString("Thanks for using this application!<br><br>") +
     "This program is intended to help visualize how many counties you've visited "
     "in the United States.  Use the checkboxes in the tree view to toggle whether "
     "you've visited the specified county, and the results ought to appear in the map."
@@ -269,28 +268,37 @@ void MainWindow::onAbout()
     "to SVG or PNG."
     "<br><br>"
     "To file an issue or contribute to development, please visit this project's "
-    "Github page at <a href=\"https://github.com/xyshal/counties\">https://github.com/xyshal/counties</a>"
+    "Github page at <a href=\"https://github.com/xyshal/counties\">https://github.com/xyshal/counties</a>."
     "<br><br>"
     "In the event that the project gets relocated, hopefully you can find a reference to it "
-    "at my <a href=\"http://www.schandle.com\">personal website</a>");
+    "at my <a href=\"http://www.schandle.com\">personal website</a>.";
+
+  const QString thirdpartyLibrariesNotice = QString("<br><br>Thirdparty libraries in use:") +
+    "<ul><li>fast-cpp-csv-parser is Copyright (C) 2015 ben-strasser"
+    "<li>pugixml is Copyright (C) 2006-2018 Arseny Kapoulkine"
+    "<li>Qt is Copyright (C) 2020 The Qt Company"
+    "</ul>";
+
   // clang-format on
+  infoWidget->setText(infoText + thirdpartyLibrariesNotice);
+
   connect(infoWidget, &QTextBrowser::anchorClicked, this,
           [](const QUrl& link) { QDesktopServices::openUrl(link); });
 
   // clang-format off
   const QString gplCopyrightNotice = QString("Copyright (C) 2021 Owen Schandle\n\n") +
 
-    "This program is free software: you can redistribute it and/or modify it under\n" +
-    "the terms of the GNU General Public License as published by the Free Software\n" +
-    "Foundation, either version 3 of the License, or (at your option) any later\n" +
-    "version.\n\n" +
+    "This program is free software: you can redistribute it and/or modify it under\n"
+    "the terms of the GNU General Public License as published by the Free Software\n"
+    "Foundation, either version 3 of the License, or (at your option) any later\n"
+    "version.\n\n"
     
-    "This program is distributed in the hope that it will be useful, but WITHOUT\n" +
-    "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS\n" +
-    "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more\n" +
+    "This program is distributed in the hope that it will be useful, but WITHOUT\n"
+    "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS\n"
+    "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more\n"
     "details.\n\n"
     
-    "You should have received a copy of the GNU General Public License along with\n" +
+    "You should have received a copy of the GNU General Public License along with\n"
     "this program.  If not, see <https://www.gnu.org/licenses/>.\n";
   // clang-format on
 

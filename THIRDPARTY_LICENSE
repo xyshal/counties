@@ -1,0 +1,5 @@
+Thirdparty libraries in use:
+
+* fast-cpp-csv-parser is Copyright (C) 2015 ben-strasser
+* pugixml is Copyright (C) 2006-2018 Arseny Kapoulkine
+* Qt is Copyright (C) 2020 The Qt Company
