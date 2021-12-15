@@ -278,7 +278,7 @@ void MainWindow::onAbout()
           [](const QUrl& link) { QDesktopServices::openUrl(link); });
 
   // clang-format off
-  const QString gplCopyrightNotice = QString("Copyright (C) 2021 Owen Schandle\n") +
+  const QString gplCopyrightNotice = QString("Copyright (C) 2021 Owen Schandle\n\n") +
 
     "This program is free software: you can redistribute it and/or modify it under\n" +
     "the terms of the GNU General Public License as published by the Free Software\n" +
