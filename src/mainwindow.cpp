@@ -88,6 +88,7 @@ MainWindow::MainWindow(QWidget* parent)
     visitedItem->setEditable(false);
     visitedItem->setCheckable(true);
     visitedItem->setCheckState(Qt::Unchecked);
+    visitedItem->setEnabled(false);
     visitedItem->setData(QVariant::fromValue(state), Qt::UserRole);
 
     QList<QStandardItem*> items = {stateItem, visitedItem};
@@ -136,8 +137,8 @@ void MainWindow::onOpen()
       this, "Open File", {}, "Comma-separated Values (*.csv)");
   if (fileName.isEmpty()) return;
 
-  const bool ok = [this,fileName]() {
-    try { // The CSV parsing library uses exceptions
+  const bool ok = [this, fileName]() {
+    try {  // The CSV parsing library uses exceptions
       return vData->readFromFile(fileName.toStdString());
     } catch (const std::exception& e) {
       std::cout << e.what() << "\n";
@@ -335,11 +336,9 @@ void MainWindow::generateStatistics()
         // TODO: Is this just confusing?  Should this be a mechanism for
         // marking all the counties as visited or not visited, with a
         // mixed-value state?
-        item->setCheckable(true);
         item->setCheckState(Qt::Checked);
       } else {
         item->setCheckState(Qt::Unchecked);
-        item->setCheckable(false);
       }
     }
   }
