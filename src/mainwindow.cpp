@@ -312,6 +312,11 @@ void MainWindow::generateStatistics()
   ui->countiesCompletedPercent->setText(
       QString("%1%").arg(stats.percentCountiesVisited));
 
+  ui->statesVisited->setText(QString("%1").arg(stats.statesVisited));
+
+  ui->statesVisitedPercent->setText(
+      QString("%1%").arg(stats.percentStatesVisited));
+
   ui->statesCompleted->setText(QString("%1").arg(stats.statesCompleted));
 
   ui->statesCompletedPercent->setText(

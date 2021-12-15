@@ -111,9 +111,10 @@ bool CountyData::setCountyVisited(const County& county, const bool visited)
  */
 bool CountyData::readFromFile(const std::string& fileName)
 {
-  io::CSVReader<2, io::trim_chars<' '>, io::double_quote_escape<',', '"'>> reader(fileName);
+  io::CSVReader<2, io::trim_chars<' '>, io::double_quote_escape<',', '"'>>
+      reader(fileName);
   reader.read_header(io::ignore_extra_column, "county", "visited");
- 
+
   bool ok = true;
   unsigned i = 0;
   std::string county_;
@@ -230,15 +231,24 @@ Statistics CountyData::statistics() const
   }
 
   // Gather state-level data
+  size_t statesVisited = 0U;
   size_t totalStatesCompleted = 0U;
   for (const State& state : AllStates()) {
     // DC is its own entity in the SVG and in the tree view, but it isn't
     // really a state, so we need to exclude its State enum equivalent here.
     if (state == State::District_Of_Columbia) continue;
     assert(vCountiesPerState.contains(state));
-    if (visitedCountiesPerState.contains(state) &&
-        visitedCountiesPerState.at(state) == vCountiesPerState.at(state)) {
-      totalStatesCompleted++;
+    if (visitedCountiesPerState.contains(state)) {
+      const size_t visitedCountiesInThisState =
+          visitedCountiesPerState.at(state);
+
+      if (visitedCountiesInThisState > 0U) {
+        statesVisited++;
+
+        if (visitedCountiesInThisState == vCountiesPerState.at(state)) {
+          totalStatesCompleted++;
+        }
+      }
     }
   }
 
@@ -247,6 +257,13 @@ Statistics CountyData::statistics() const
       std::round(static_cast<double>(totalVisitedCounties) / mCounties.size() *
                  100.0 * 10.0) /
       10.0;
+
+
+  const double percentStatesVisited =
+      std::round(static_cast<double>(statesVisited) / (AllStates().size() - 1) *
+                 100.0 * 10.0) /
+      10.0;
+
 
   const double percentStatesCompleted =
       std::round(static_cast<double>(totalStatesCompleted) /
@@ -257,6 +274,8 @@ Statistics CountyData::statistics() const
   Statistics stats;
   stats.countiesVisited = totalVisitedCounties;
   stats.percentCountiesVisited = percentCountiesVisited;
+  stats.statesVisited = statesVisited;
+  stats.percentStatesVisited = percentStatesVisited;
   stats.statesCompleted = totalStatesCompleted;
   stats.percentStatesCompleted = percentStatesCompleted;
 

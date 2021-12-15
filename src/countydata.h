@@ -11,6 +11,9 @@ struct Statistics {
   size_t countiesVisited = 0U;
   double percentCountiesVisited = 0.0;
 
+  size_t statesVisited = 0U;
+  double percentStatesVisited = 0.0;
+
   size_t statesCompleted = 0U;
   double percentStatesCompleted = 0.0;
 

@@ -31,7 +31,7 @@
           <x>0</x>
           <y>0</y>
           <width>68</width>
-          <height>494</height>
+          <height>495</height>
          </rect>
         </property>
        </widget>
@@ -46,13 +46,6 @@
       <property name="spacing">
        <number>6</number>
       </property>
-      <item row="1" column="1">
-       <widget class="QLabel" name="countiesCompleted">
-        <property name="text">
-         <string>0</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="2">
        <widget class="QLabel" name="countiesCompletedPercent">
         <property name="text">
@@ -67,22 +60,50 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="statesCompletedLabel">
+      <item row="3" column="2">
+       <widget class="QLabel" name="statesCompletedPercent">
         <property name="text">
-         <string>States Completed</string>
+         <string>0%</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QLabel" name="statesCompleted">
         <property name="text">
          <string>0</string>
         </property>
        </widget>
       </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="countiesCompleted">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="statesCompletedLabel">
+        <property name="text">
+         <string>States Completed</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="statesVisitedLabel">
+        <property name="text">
+         <string>States Visited</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="statesVisited">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="2">
-       <widget class="QLabel" name="statesCompletedPercent">
+       <widget class="QLabel" name="statesVisitedPercent">
         <property name="text">
          <string>0%</string>
         </property>
@@ -128,7 +149,6 @@
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionImport_CSV">
    <property name="text">
     <string>&amp;Import CSV</string>
