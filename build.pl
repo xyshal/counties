@@ -11,8 +11,7 @@ sub RunCommandInConanEnv
   print "$cmd\n";
   my $activateScript = ($^O eq "MSWin32") ? "activate.bat" : "activate.sh";
   unless (-f $activateScript) {
-    my $path = ($^O eq "darwin") ? "../conanfile_mac.txt" : "..";
-    system("conan install $path") == 0 or die $!;
+    system("conan install ..") == 0 or die $!;
   }
   if ($^O eq "MSWin32") {
     system("cmd /c \"CALL activate.bat && CALL activate_build.bat && $cmd\"") == 0 or die $!;
