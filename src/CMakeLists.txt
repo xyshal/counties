@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(qcounties VERSION 1.0 LANGUAGES CXX)
+project(qcounties VERSION 1.1 LANGUAGES CXX)
 
 configure_file(config.h.in config.h)
 
@@ -49,7 +49,7 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_SOURCE_DIR}/../resou
 
 include_directories(${fast-cpp-csv-parser_INCLUDE_DIR})
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PUBLIC
                       Qt6::Core
                       Qt6::Xml
                       Qt6::SvgWidgets
