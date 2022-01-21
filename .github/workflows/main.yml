@@ -37,12 +37,11 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Acquire and configure Conan
         run: |
           pip3 install conan
           export PATH=/home/runner/.local/bin:$PATH
-          conan profile new default --detect
-          conan profile update settings.compiler.libcxx=libstdc++11 default
 
       - name: Build or acquire dependencies
         run: conan install . --build=missing
@@ -54,11 +53,9 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Acquire and configure Conan
-        run: |
-          pip3 install conan
-          conan profile new default --detect
-          conan profile update settings.compiler.libcxx=libstdc++11 default
+        run: pip3 install conan
 
       - name: Build or acquire dependencies
         run: conan install . --build=missing
