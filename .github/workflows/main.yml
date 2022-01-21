@@ -9,28 +9,60 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  linux:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+  # This won't work until they have GCC 9 (or we build GCC 9 in the build)
+  #linux:
+  #  runs-on: ubuntu-latest
 
+  #  steps:
+  #    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+  #    - uses: actions/checkout@v2
+
+  #    - name: Acquire and configure Conan
+  #      run: |
+  #        pip3 install conan
+  #        export PATH=/home/runner/.local/bin:$PATH
+  #        conan profile new default --detect
+  #        conan profile update settings.compiler.libcxx=libstdc++11 default
+  #    
+  #    - name: Build or acquire dependencies
+  #      run: |
+  #        sudo apt-get install -y libgl-dev
+  #        conan install . --build=missing
+
+  #    - name: Run the actual build
+  #      run: perl build.pl
+
+  mac:
+    runs-on: macos-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
       - name: Acquire and configure Conan
         run: |
           pip3 install conan
           export PATH=/home/runner/.local/bin:$PATH
           conan profile new default --detect
           conan profile update settings.compiler.libcxx=libstdc++11 default
-      
+
       - name: Build or acquire dependencies
-        run: |
-          sudo apt-get install -y libgl-dev
-          conan install . --build=missing
+        run: conan install . --build=missing
 
       - name: Run the actual build
         run: perl build.pl
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Acquire and configure Conan
+        run: |
+          pip3 install conan
+          conan profile new default --detect
+          conan profile update settings.compiler.libcxx=libstdc++11 default
+
+      - name: Build or acquire dependencies
+        run: conan install . --build=missing
+
+      - name: Run the actual build
+        run: perl build.pl
+
