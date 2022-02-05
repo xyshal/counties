@@ -19,8 +19,14 @@
 
 #include <array>
 
-// TODO: My MacBook is really old :/
-#ifndef __APPLE__
+// TODO: Remove once Github's Linux compiler is modern enough
+#if defined(__has_cpp_attribute) 
+  #if __has_cpp_attribute(__cpp_lib_three_way_comparison)
+    #define HAS_COMPARE
+  #endif
+#endif
+
+#ifdef HAS_COMPARE
 #include <compare>
 #endif
 
@@ -87,7 +93,9 @@ struct County {
   std::string name;
   State state = State::NStates;
 
-#ifdef __APPLE__
+#ifdef HAS_COMPARE
+  friend auto operator<=>(const County&, const County&) = default;
+#else
   friend bool operator<(const County& lhs, const County& rhs)
   {
     if (lhs.state != rhs.state) return lhs.state < rhs.state;
@@ -97,8 +105,6 @@ struct County {
   {
     return lhs.name == rhs.name && lhs.state == rhs.state;
   }
-#else
-  friend auto operator<=>(const County&, const County&) = default;
 #endif
 
   std::string toString() const;
