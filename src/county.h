@@ -20,13 +20,7 @@
 #include <array>
 
 // TODO: Remove once Github's Linux compiler is modern enough
-#if defined(__has_cpp_attribute) 
-  #if __has_cpp_attribute(__cpp_lib_three_way_comparison)
-    #define HAS_COMPARE
-  #endif
-#endif
-
-#ifdef HAS_COMPARE
+#if defined(__cpp_lib_three_way_comparison)
 #include <compare>
 #endif
 
@@ -93,7 +87,7 @@ struct County {
   std::string name;
   State state = State::NStates;
 
-#ifdef HAS_COMPARE
+#if defined(__cpp_lib_three_way_comparison)
   friend auto operator<=>(const County&, const County&) = default;
 #else
   friend bool operator<(const County& lhs, const County& rhs)
