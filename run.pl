@@ -13,7 +13,7 @@ if ($^O eq "MSWin32") {
   my $conanInfo = read_file("build/conanbuildinfo.cmake");
   my $qtPath = $1 if $conanInfo =~ /CONAN_QT_ROOT "(.*)"/;
   die "Couldn't find Qt path" unless defined $qtPath;
-  $ENV{'DYLD_LIBRARY_PATH'} = "$qtPath/lib";
+  $ENV{'DYLD_LIBRARY_PATH'} = "$qtPath/lib:/opt/local/lib";
   system("build/src/bin/qcounties");
 }
 

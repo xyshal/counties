@@ -1,9 +1,9 @@
 [requires]
-cmake/3.23.1
-fast-cpp-csv-parser/cci.20200830
-gtest/1.11.0
-pugixml/1.11
-qt/6.2.4
+cmake/3.25.0
+fast-cpp-csv-parser/cci.20211104
+gtest/1.12.1
+pugixml/1.13
+qt/6.4.1
 
 [generators]
 cmake
