@@ -1,17 +1,16 @@
 [requires]
-cmake/3.25.0
+cmake/3.27.1
 fast-cpp-csv-parser/cci.20211104
-gtest/1.12.1
+gtest/1.14.0
 pugixml/1.13
-qt/6.4.1
+qt/6.5.2
 
 [generators]
-cmake
-cmake_paths
-cmake_find_package
-virtualenv
-virtualbuildenv
+CMakeDeps
+CMakeToolchain
+VirtualRunEnv
+VirtualBuildEnv
 
 [options]
-qt:shared=True
-qt:qtsvg=True
+qt/*:shared=True
+qt/*:qtsvg=True

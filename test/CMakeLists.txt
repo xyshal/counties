@@ -8,10 +8,6 @@ if (UNIX)
   add_compile_options(-Wall -Wextra -Werror)
 endif (UNIX)
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
-conan_basic_setup(TARGETS)
-
 find_package(Qt6
              COMPONENTS
                Core

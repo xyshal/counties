@@ -328,8 +328,8 @@ void MainWindow::countyChanged(const QStandardItem* item)
 {
   if (vLoadingFromData) return;
 
-  assert(item->column() == 1);
-  assert(item->parent() != vModel->invisibleRootItem());
+  if (item->column() != 1) throw;
+  if (item->parent() == vModel->invisibleRootItem()) throw;
 
   const size_t idx = item->data(Qt::UserRole).toUInt();
   std::pair<County, bool>& countyPair = vData->mCounties[idx];
@@ -390,7 +390,7 @@ void MainWindow::rebuildModelFromData()
 void MainWindow::rebuildSvgFromData()
 {
   const std::string svg = vData->svg();
-  assert(!svg.empty());
+  if (svg.empty()) throw;
 
   ui->countyMap->load(QByteArray(svg.c_str()));
   ui->countyMap->renderer()->setAspectRatioMode(Qt::KeepAspectRatio);

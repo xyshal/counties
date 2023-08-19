@@ -39,7 +39,7 @@ CountyData::CountyData()
   QString fileContents;
 
   if (!f.open(QIODevice::ReadOnly)) {
-    assert(false);
+    throw;
   } else {
     QTextStream s(&f);
     while (!s.atEnd()) {
@@ -54,15 +54,14 @@ CountyData::CountyData()
 
       fileContents += line;
     }
-    assert(!fileContents.isEmpty());
+    if (fileContents.isEmpty()) throw;
 
     // Pull all the <path>s into the data
     const pugi::xml_parse_result result =
         vSvg.load_string(fileContents.toStdString().c_str());
-    assert(result == pugi::status_ok);
+    if (result != pugi::status_ok) throw;
     const pugi::xml_node countyGroup = vSvg.child("svg").child("g");
 
-    size_t nPaths = 0;
     for (const pugi::xml_node& child : countyGroup.children()) {
       // Counties
       const County county = County::fromString(child.attribute("id").value());
@@ -75,10 +74,8 @@ CountyData::CountyData()
       } else {
         vCountiesPerState[county.state] = 1;
       }
-
-      nPaths++;
     }
-    assert(mCounties.size() == 3143U);
+    if (mCounties.size() != 3143U) throw;
 
     // Because the SVG doesn't sort the counties, we have to.
     // TODO: Just sort the SVG's path elements and resave it; it shouldn't
@@ -96,7 +93,7 @@ CountyData::CountyData()
 bool CountyData::countyVisited(const County& county) const
 {
   auto it = findCounty(county);
-  assert(it != mCounties.end());
+  if (it == mCounties.end()) throw;
   return (*it).second;
 }
 
@@ -191,7 +188,7 @@ bool CountyData::writeToFile(const std::string& fileName) const
  */
 void CountyData::setSvgColor(const std::string& color)
 {
-  assert(!color.empty());
+  if (color.empty()) throw;
   vVisitedColor = color;
 
   // Re-color the SVG for anything with a fill
@@ -227,7 +224,7 @@ std::string CountyData::svg()
 
 Statistics CountyData::statistics() const
 {
-  assert(mCounties.size() > 0U);
+  if (mCounties.size() == 0U) throw;
 
   size_t totalVisitedCounties = 0U;
   std::unordered_map<State, size_t> visitedCountiesPerState;
@@ -254,7 +251,7 @@ Statistics CountyData::statistics() const
     // DC is its own entity in the SVG and in the tree view, but it isn't
     // really a state, so we need to exclude its State enum equivalent here.
     if (state == State::District_Of_Columbia) continue;
-    assert(vCountiesPerState.contains(state));
+    if (!vCountiesPerState.contains(state)) throw;
     if (visitedCountiesPerState.contains(state)) {
       const size_t visitedCountiesInThisState =
           visitedCountiesPerState.at(state);
