@@ -28,7 +28,7 @@ std::string County::toString() const
 County County::fromString(const std::string& id_)
 {
   std::string id = id_;
-  id.erase(std::remove(id.begin(), id.end(), '\"'), id.end());
+  std::erase(id, '\"');
 
   const size_t firstComma = id.find(",");
   const std::string countyName = id.substr(0, firstComma);

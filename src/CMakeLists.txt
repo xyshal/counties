@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.25)
 project(qcounties VERSION 1.1 LANGUAGES CXX)
 
 configure_file(config.h.in config.h)
@@ -64,17 +64,17 @@ endif (UNIX)
 if (WIN32)
   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${CONAN_QT_ROOT}/bin/Qt6Core.dll"
-    "${CONAN_QT_ROOT}/bin/Qt6Gui.dll"
-    "${CONAN_QT_ROOT}/bin/Qt6Svg.dll"
-    "${CONAN_QT_ROOT}/bin/Qt6SvgWidgets.dll"
-    "${CONAN_QT_ROOT}/bin/Qt6Widgets.dll"
-    "${CONAN_QT_ROOT}/res/archdatadir/plugins/platforms"
+    "${qt_PACKAGE_FOLDER_RELEASE}/bin/Qt6Core.dll"
+    "${qt_PACKAGE_FOLDER_RELEASE}/bin/Qt6Gui.dll"
+    "${qt_PACKAGE_FOLDER_RELEASE}/bin/Qt6Svg.dll"
+    "${qt_PACKAGE_FOLDER_RELEASE}/bin/Qt6SvgWidgets.dll"
+    "${qt_PACKAGE_FOLDER_RELEASE}/bin/Qt6Widgets.dll"
+    "${qt_PACKAGE_FOLDER_RELEASE}/plugins/platforms"
     $<TARGET_FILE_DIR:${PROJECT_NAME}>)
-    
+
   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${CONAN_QT_ROOT}/res/archdatadir/plugins/platforms/qwindows.dll"
+    "${qt_PACKAGE_FOLDER_RELEASE}/plugins/platforms/qwindows.dll"
     $<TARGET_FILE_DIR:${PROJECT_NAME}>/platforms)
 
 endif (WIN32)

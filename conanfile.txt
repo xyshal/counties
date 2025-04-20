@@ -1,9 +1,8 @@
 [requires]
-cmake/3.27.1
 fast-cpp-csv-parser/cci.20211104
 gtest/1.14.0
 pugixml/1.13
-qt/6.5.2
+qt/6.7.3
 
 [generators]
 CMakeDeps

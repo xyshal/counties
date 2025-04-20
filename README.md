@@ -15,14 +15,16 @@ you can also make changes in your favorite text editor.
 Dependencies
 ============
 * Conan (and, thus, Python)
-* Perl
+* CMake >= 3.25
+* Ninja
+* Perl (indirectly)
 
 Compiling
 =========
 Theoretically, you ought to be able to just `perl build.pl && perl run.pl`.
 
 Builds are sporadically run on:
-* Mac OS 10.15
-* Debian buster
+* Debian bookworm
+* Mac OS 15
 * Arch
 * Windows 10
