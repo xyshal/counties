@@ -1,8 +1,8 @@
 [requires]
 fast-cpp-csv-parser/cci.20211104
-gtest/1.14.0
-pugixml/1.13
-qt/6.7.3
+gtest/1.17.0
+pugixml/1.15
+qt/6.8.3
 
 [generators]
 CMakeDeps
@@ -13,3 +13,4 @@ VirtualBuildEnv
 [options]
 qt/*:shared=True
 qt/*:qtsvg=True
+qt/*:opengl=no
